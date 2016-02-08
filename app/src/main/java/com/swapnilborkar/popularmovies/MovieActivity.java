@@ -18,6 +18,11 @@ public class MovieActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        if (getSupportActionBar() != null)
+        {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         TextView textView = (TextView)findViewById(R.id.txtMoviePosition);
 
         String position =  getIntent().getStringExtra("Position");
