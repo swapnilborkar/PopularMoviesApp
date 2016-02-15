@@ -10,7 +10,6 @@ public class MovieActivity extends AppCompatActivity {
     private String LOG_TAG = MovieActivity.class.getSimpleName();
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,22 +17,18 @@ public class MovieActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if (getSupportActionBar() != null)
-        {
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        TextView textView = (TextView)findViewById(R.id.txtMoviePosition);
+        TextView textView = (TextView) findViewById(R.id.txtMoviePosition);
 
-        String position =  getIntent().getStringExtra("Position");
+        String position = getIntent().getStringExtra("Position");
 
-        if (position!=null)
-        {
+        if (position != null) {
             textView.setText(position);
         }
 
 
-
-
-
-    }}
+    }
+}

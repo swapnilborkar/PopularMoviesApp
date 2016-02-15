@@ -1,8 +1,7 @@
 package com.swapnilborkar.popularmovies;
 
 
-public class PopularMovies
-{
+public class PopularMovies {
     String movieName;
     String movieSummary;
     int moviePoster; //drawable reference id

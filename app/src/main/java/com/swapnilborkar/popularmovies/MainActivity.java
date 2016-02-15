@@ -11,32 +11,35 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ArrayList<Integer> images;
+
     private PostersAdapter postersAdapter;
+    private ArrayList<PopularMovies> popularMovies;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         GridView gridView = (GridView) findViewById(R.id.grid_view);
 
-        images = new ArrayList<>();
-        images.add(R.drawable.m1);
-        images.add(R.drawable.m2);
-        images.add(R.drawable.m3);
-        images.add(R.drawable.m4);
-        images.add(R.drawable.m5);
-        images.add(R.drawable.m6);
-        images.add(R.drawable.m7);
-        images.add(R.drawable.m8);
+        PopularMovies[] popularMovies = {
+                new PopularMovies("Dirty Grandpa", getText(R.string.fake_movie_summary).toString(), R.drawable.m1),
+                new PopularMovies("Ride Along 2", getText(R.string.fake_movie_summary).toString(), R.drawable.m2),
+                new PopularMovies("Deadpool", getText(R.string.fake_movie_summary).toString(), R.drawable.m3),
+                new PopularMovies("Batman v Superman: Dawn of Justice", getText(R.string.fake_movie_summary).toString(), R.drawable.m4),
+                new PopularMovies("Captain America: Civil War", getText(R.string.fake_movie_summary).toString(), R.drawable.m5),
+                new PopularMovies("Suicide Squad", getText(R.string.fake_movie_summary).toString(), R.drawable.m6),
+                new PopularMovies("Get A Job", getText(R.string.fake_movie_summary).toString(), R.drawable.m7),
+                new PopularMovies("The Jungle Book", getText(R.string.fake_movie_summary).toString(), R.drawable.m8)
+        };
 
-        postersAdapter = new PostersAdapter(this, images);
+        postersAdapter = new PostersAdapter(this, Arrays.asList(popularMovies));
         gridView.setAdapter(postersAdapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -73,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
 
 
 }
