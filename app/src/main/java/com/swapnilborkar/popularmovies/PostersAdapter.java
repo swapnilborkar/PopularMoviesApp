@@ -13,9 +13,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-/**
- * Created by SWAPNIL on 07-02-2016.
- */
+
 public class PostersAdapter extends ArrayAdapter<PopularMovies> {
 
     MainActivity mainActivity;
@@ -44,7 +42,7 @@ public class PostersAdapter extends ArrayAdapter<PopularMovies> {
 
             ImageView imageView = (ImageView) gridRow.findViewById(R.id.imageView);
             //imageView.setImageResource(popularMovies.moviePoster);
-            Picasso.with(getContext().getApplicationContext()).load("http://i.imgur.com/DvpvklR.png").into(imageView);
+            Picasso.with(getContext().getApplicationContext()).load("http://image.tmdb.org/t/p/w780//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg").into(imageView);
 
             TextView textView = (TextView) gridRow.findViewById(R.id.textView);
             textView.setText(popularMovies.movieName);

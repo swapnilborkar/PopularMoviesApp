@@ -19,6 +19,7 @@ public class MovieActivity extends AppCompatActivity {
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(getIntent().getStringExtra("Movie Name"));
         }
 
         TextView textView1 = (TextView) findViewById(R.id.txtMoviePosition);
@@ -31,7 +32,7 @@ public class MovieActivity extends AppCompatActivity {
 
         if (position != null) {
             textView1.setText(position);
-            textView2.setText(getIntent().getStringExtra("Movie Name"));
+
             textView3.setText(getIntent().getStringExtra("Synopsis"));
         }
 
