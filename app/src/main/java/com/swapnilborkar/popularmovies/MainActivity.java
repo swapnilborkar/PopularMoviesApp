@@ -47,8 +47,16 @@ public class MainActivity extends AppCompatActivity {
                                     int position, long id) {
 //                Toast.makeText(MainActivity.this, "" + position,
 //                        Toast.LENGTH_SHORT).show();
+
+                PopularMovies popularMovie = postersAdapter.getItem(position);
+                String title = popularMovie.movieName;
+                String synopsis = popularMovie.movieSummary;
+
+
                 Intent intent = new Intent(MainActivity.this, MovieActivity.class);
                 intent.putExtra("Position", Integer.toString(position));
+                intent.putExtra("Movie Name", title);
+                intent.putExtra("Synopsis", synopsis);
                 startActivity(intent);
             }
         });
