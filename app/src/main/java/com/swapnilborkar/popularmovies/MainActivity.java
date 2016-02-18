@@ -12,6 +12,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +23,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,40 +53,69 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         GridView gridView = (GridView) findViewById(R.id.grid_view);
-
-        PopularMovies[] popularMovies = {
-                new PopularMovies("Dirty Grandpa", getText(R.string.fake_movie_summary).toString(), R.drawable.m1),
-                new PopularMovies("Ride Along 2", getText(R.string.fake_movie_summary).toString(), R.drawable.m2),
-                new PopularMovies("Deadpool", getText(R.string.fake_movie_summary).toString(), R.drawable.m3),
-                new PopularMovies("Batman v Superman: Dawn of Justice", getText(R.string.fake_movie_summary).toString(), R.drawable.m4),
-                new PopularMovies("Captain America: Civil War", getText(R.string.fake_movie_summary).toString(), R.drawable.m5),
-                new PopularMovies("Suicide Squad", getText(R.string.fake_movie_summary).toString(), R.drawable.m6),
-                new PopularMovies("Get A Job", getText(R.string.fake_movie_summary).toString(), R.drawable.m7),
-                new PopularMovies("The Jungle Book", getText(R.string.fake_movie_summary).toString(), R.drawable.m8)
-        };
-
-        postersAdapter = new PostersAdapter(this, Arrays.asList(popularMovies));
+        postersAdapter = new PostersAdapter(this, new ArrayList<PopularMovies>());
         gridView.setAdapter(postersAdapter);
+        //fake data
+//        PopularMovies[] popularMovies = {
+//                new PopularMovies("Dirty Grandpa", getText(R.string.fake_movie_summary).toString(), R.drawable.m1),
+//                new PopularMovies("Ride Along 2", getText(R.string.fake_movie_summary).toString(), R.drawable.m2),
+//                new PopularMovies("Deadpool", getText(R.string.fake_movie_summary).toString(), R.drawable.m3),
+//                new PopularMovies("Batman v Superman: Dawn of Justice", getText(R.string.fake_movie_summary).toString(), R.drawable.m4),
+//                new PopularMovies("Captain America: Civil War", getText(R.string.fake_movie_summary).toString(), R.drawable.m5),
+//                new PopularMovies("Suicide Squad", getText(R.string.fake_movie_summary).toString(), R.drawable.m6),
+//                new PopularMovies("Get A Job", getText(R.string.fake_movie_summary).toString(), R.drawable.m7),
+//                new PopularMovies("The Jungle Book", getText(R.string.fake_movie_summary).toString(), R.drawable.m8)
+//        };
+
+
+        //postersAdapter = new PostersAdapter(this, Arrays.asList(popularMovies));
+        //gridView.setAdapter(postersAdapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-//                Toast.makeText(MainActivity.this, "" + position,
-//                        Toast.LENGTH_SHORT).show();
 
-                PopularMovies popularMovie = postersAdapter.getItem(position);
-                String title = popularMovie.movieName;
-                String synopsis = popularMovie.movieSummary;
+                PopularMovies popularMovies = postersAdapter.getItem(position);
+                String url = popularMovies.imageUrl;
+                String title = popularMovies.title;
+                String releaseDate = popularMovies.releaseDate;
+                double rating = popularMovies.rating;
+                String synopsis = popularMovies.synopsis;
+                String ratingString = String.valueOf(rating);
 
 
-                Intent intent = new Intent(MainActivity.this, MovieActivity.class);
-                intent.putExtra("Position", Integer.toString(position));
-                intent.putExtra("Movie Name", title);
-                intent.putExtra("Synopsis", synopsis);
+                Intent intent = new Intent(MainActivity.this, MovieActivity.class)
+                        .putExtra("url", url)
+                        .putExtra("title", title)
+                        .putExtra("release", releaseDate)
+                        .putExtra("synopsis", synopsis)
+                        .putExtra("rating", ratingString);
                 startActivity(intent);
             }
         });
+    }
 
+    public ArrayList<PopularMovies> getPopularMoviesFromJson(String MovieJsonString) throws JSONException {
+
+        ArrayList<PopularMovies> popularMoviesArrayList = new ArrayList<>();
+        JSONObject jsonObject = new JSONObject(MovieJsonString);
+        JSONArray jsonArray = jsonObject.getJSONArray("results");
+
+        //parsing every entry in the array using a loop
+        for (int i = 0; i < jsonArray.length(); i++) {
+            String imageUrl = jsonArray.getJSONObject(i).getString("poster_path");
+            int id = jsonArray.getJSONObject(i).getInt("id");
+            String title = jsonArray.getJSONObject(i).getString("original_title");
+            String synopsis = jsonArray.getJSONObject(i).getString("overview");
+            String releaseDate = jsonArray.getJSONObject(i).getString("release_date");
+            double rating = jsonArray.getJSONObject(i).getDouble("vote_average");
+
+            PopularMovies movie = new PopularMovies(imageUrl, id, title, synopsis, releaseDate, rating);
+            popularMoviesArrayList.add(movie);
+
+        }
+
+        return popularMoviesArrayList;
     }
 
     @Override
@@ -139,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // Read the input stream into a String
                 InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
+                StringBuilder builder = new StringBuilder();
                 if (inputStream == null) {
                     // Nothing to do.
                     MoviesJsonStr = null;
@@ -152,15 +184,15 @@ public class MainActivity extends AppCompatActivity {
                 while ((line = reader.readLine()) != null) {
                     // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
                     // But it does make debugging a *lot* easier if you print out the completed
-                    // buffer for debugging.
-                    buffer.append(line).append("\n");
+                    // builder for debugging.
+                    builder.append(line).append("\n");
                 }
 
-                if (buffer.length() == 0) {
+                if (builder.length() == 0) {
                     // Stream was empty.  No point in parsing.
                     MoviesJsonStr = null;
                 }
-                MoviesJsonStr = buffer.toString();
+                MoviesJsonStr = builder.toString();
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
                 // If the code didn't successfully get the weather data, there's no point in attemping
@@ -179,11 +211,28 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            Log.v(LOG_TAG, MoviesJsonStr);
+            //Log.v(LOG_TAG, MoviesJsonStr);
             return MoviesJsonStr;
         }
 
 
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            if (s != null) {
+                postersAdapter.clear();
+                try {
+                    popularMovies = getPopularMoviesFromJson(s);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                for (PopularMovies movie : popularMovies) {
+                    postersAdapter.add(movie);
+                }
+            }
+        }
     }
 }
 

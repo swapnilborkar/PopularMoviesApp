@@ -45,7 +45,7 @@ public class PostersAdapter extends ArrayAdapter<PopularMovies> {
             Picasso.with(getContext().getApplicationContext()).load("http://image.tmdb.org/t/p/w780//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg").into(imageView);
 
             TextView textView = (TextView) gridRow.findViewById(R.id.textView);
-            textView.setText(popularMovies.movieName);
+            textView.setText(popularMovies.title);
 
         }
 

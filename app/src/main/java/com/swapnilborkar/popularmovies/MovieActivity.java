@@ -1,41 +1,43 @@
 package com.swapnilborkar.popularmovies;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.widget.TextView;
 
 public class MovieActivity extends AppCompatActivity {
-
-    private String LOG_TAG = MovieActivity.class.getSimpleName();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movie);
+        setContentView(R.layout.activity_movie_details);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        Intent intent = getIntent();
+
+        if (intent != null) {
+            if (getSupportActionBar() != null) {
+
+                getSupportActionBar().setDisplayShowTitleEnabled(true);
+                setTitle(intent.getStringExtra("title"));
+            }
+        }
+
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(getIntent().getStringExtra("Movie Name"));
         }
 
-        TextView textView1 = (TextView) findViewById(R.id.txtMoviePosition);
-        TextView textView2 = (TextView) findViewById(R.id.txtMovieName);
-        TextView textView3 = (TextView) findViewById(R.id.txtMovieSynopsis);
-
-
-        String position = getIntent().getStringExtra("Position");
-
-
-        if (position != null) {
-            textView1.setText(position);
-
-            textView3.setText(getIntent().getStringExtra("Synopsis"));
-        }
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
 
 
     }
+
 }
