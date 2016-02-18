@@ -24,10 +24,78 @@
         android:contentDescription="@string/poster" />
 
     <TextView
-        android:id="@+id/txt_synopsis"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/label_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="75dp"
+        android:layout_toRightOf="@id/img_poster"
+        android:text="@string/rating"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/heading_text_size" />
+
+    <TextView
+        android:id="@+id/txt_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/label_rating"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/img_poster"
+        android:text="@string/rating"
+        android:textSize="50sp" />
+
+    <TextView
+        android:id="@+id/label_out_of_ten"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/label_rating"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="35dp"
+        android:layout_toRightOf="@id/txt_rating"
+        android:text="@string/out_of_ten"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/label_release"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/label_out_of_ten"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="30dp"
+        android:layout_toRightOf="@id/img_poster"
+        android:text="@string/release"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/heading_text_size" />
+
+    <TextView
+        android:id="@+id/txt_release"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/label_release"
+        android:layout_marginLeft="48dp"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/img_poster"
+        android:textSize="20sp" />
+
+
+    <TextView
+
+        android:id="@+id/label_overview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@id/img_poster"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="@string/overview_label"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/heading_text_size" />
+
+    <TextView
+        android:id="@+id/txt_synopsis"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/label_overview"
+        android:layout_marginTop="5dp"
         android:textSize="@dimen/text_size" />
 
 

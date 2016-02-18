@@ -28,11 +28,26 @@ public class MovieActivityFragment extends Fragment {
         Intent intent = getActivity().getIntent();
 
         ImageView moviePoster = (ImageView) rootView.findViewById(R.id.img_poster);
-        Picasso.with(getActivity()).load(baseurl + intent.getStringExtra("url")).into(moviePoster);
+
+        int w = getContext().getResources().getDisplayMetrics().widthPixels / 2; //dividing by numColumns
+        int h = (int) (w * 1.5); //adjusting height to 1.5x times the width
+
+        Picasso.with(getActivity())
+                .load(baseurl + intent.getStringExtra("url"))
+                .resize(w, h)
+                .centerCrop()
+                .into(moviePoster);
 
 
         TextView movieSynopsis = (TextView) rootView.findViewById(R.id.txt_synopsis);
         movieSynopsis.setText(intent.getStringExtra("synopsis"));
+
+        TextView movieRating = (TextView) rootView.findViewById(R.id.txt_rating);
+        movieRating.setText(intent.getStringExtra("rating"));
+
+        TextView movieReleaseDate = (TextView) rootView.findViewById(R.id.txt_release);
+        movieReleaseDate.setText(intent.getStringExtra("release"));
+
 
 
         return rootView;

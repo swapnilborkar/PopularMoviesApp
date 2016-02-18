@@ -79,8 +79,8 @@ public class MainActivity extends AppCompatActivity {
                 String url = popularMovies.imageUrl;
                 String title = popularMovies.title;
                 String releaseDate = popularMovies.releaseDate;
-                double rating = popularMovies.rating;
                 String synopsis = popularMovies.synopsis;
+                double rating = popularMovies.rating;
                 String ratingString = String.valueOf(rating);
 
 
