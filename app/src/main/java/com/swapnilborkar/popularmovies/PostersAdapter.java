@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -17,12 +16,13 @@ import java.util.List;
 public class PostersAdapter extends ArrayAdapter<PopularMovies> {
 
     MainActivity mainActivity;
-    Context mcontext;
+    private Context mContext;
 
 
     public PostersAdapter(Activity context, List<PopularMovies> popularMovies) {
 
         super(context, 0, popularMovies);
+        mContext = context;
     }
 
 
@@ -40,12 +40,18 @@ public class PostersAdapter extends ArrayAdapter<PopularMovies> {
                     inflate(R.layout.grid_item, parent, false);
         } else {
 
+            String baseUrl = "http://image.tmdb.org/t/p/w500/";
             ImageView imageView = (ImageView) gridRow.findViewById(R.id.imageView);
-            //imageView.setImageResource(popularMovies.moviePoster);
-            Picasso.with(getContext().getApplicationContext()).load("http://image.tmdb.org/t/p/w780//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg").into(imageView);
 
-            TextView textView = (TextView) gridRow.findViewById(R.id.textView);
-            textView.setText(popularMovies.title);
+            //computing width and height for resizing as per screen size
+            int w = getContext().getResources().getDisplayMetrics().widthPixels / 2; //dividing by numColumns
+            int h = (int) (w * 1.5); //adjusting height to 1.5x times the width
+
+            Picasso.with(mContext)
+                    .load(baseUrl + popularMovies.imageUrl)
+                    .resize(w, h)
+                    .centerCrop()
+                    .into(imageView);
 
         }
 

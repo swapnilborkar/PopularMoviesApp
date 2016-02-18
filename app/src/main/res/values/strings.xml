@@ -6,6 +6,7 @@
     <string name="fake_movie_summary">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque suscipit vel sem eu pulvinar. Phasellus eu ipsum tempus, tempus nisl.</string>
     <string name="spinner_title__main">Sort</string>
     <string name="api_key">YOUR_API_KEY</string>
+    <string name="poster">poster</string>
 
 
     <string-array name="movie_sort">
@@ -13,6 +14,6 @@
         <item>Highest Rated</item>
     </string-array>
 
-   
+
 </resources>
 
