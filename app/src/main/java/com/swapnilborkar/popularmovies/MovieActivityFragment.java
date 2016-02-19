@@ -6,10 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -24,32 +21,37 @@ public class MovieActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movie, container, false);
 
-        String baseurl = "http://image.tmdb.org/t/p/w780/";
+//        String baseurl = "http://image.tmdb.org/t/p/w780/";
         Intent intent = getActivity().getIntent();
 
-        ImageView moviePoster = (ImageView) rootView.findViewById(R.id.img_poster);
-
-        int w = getContext().getResources().getDisplayMetrics().widthPixels / 2; //dividing by numColumns
-        int h = (int) (w * 1.5); //adjusting height to 1.5x times the width
-
-        Picasso.with(getActivity())
-                .load(baseurl + intent.getStringExtra("url"))
-                .resize(w, h)
-                .centerCrop()
-                .into(moviePoster);
-
+//        final ImageView moviePoster = (ImageView) rootView.findViewById(R.id.img_poster);
 
         TextView movieSynopsis = (TextView) rootView.findViewById(R.id.txt_synopsis);
         movieSynopsis.setText(intent.getStringExtra("synopsis"));
 
-        TextView movieRating = (TextView) rootView.findViewById(R.id.txt_rating);
+        final TextView movieRating = (TextView) rootView.findViewById(R.id.txt_rating);
         movieRating.setText(intent.getStringExtra("rating"));
 
-        TextView movieReleaseDate = (TextView) rootView.findViewById(R.id.txt_release);
-        movieReleaseDate.setText(intent.getStringExtra("release"));
+        final TextView movieReleaseDate = (TextView) rootView.findViewById(R.id.txt_release);
+        String releaseYear = intent.getStringExtra("release");
+        movieReleaseDate.setText(releaseYear.substring(0, 4));
+
+
 
 
 
         return rootView;
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+
+
     }
 }
+
+
+

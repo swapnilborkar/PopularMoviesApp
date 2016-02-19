@@ -3,6 +3,7 @@ package com.swapnilborkar.popularmovies;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -25,8 +26,6 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-
-
 
     private PostersAdapter postersAdapter;
     private ArrayList<PopularMovies> popularMovies;
@@ -142,6 +141,8 @@ public class MainActivity extends AppCompatActivity {
 
     public class FetchMovieTask extends AsyncTask<Void, Void, String> {
 
+        private CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
+
         @Override
         protected String doInBackground(Void... params) {
             // These two need to be declared outside the try/catch
@@ -156,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
             //ToDo: Remove API Key before pushing to Github!
             //Insert your own API key in /res/strings.xml
             String APIKEY = "&api_key=" + getResources().getString(R.string.api_key);
+
 
             try {
                 // Construct the URL for the OpenWeatherMap query
@@ -197,11 +199,11 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(LOG_TAG, "Error ", e);
                 // If the code didn't successfully get the weather data, there's no point in attemping
                 // to parse it.
-                MoviesJsonStr = null;
+                    MoviesJsonStr = null;
             } finally {
                 if (urlConnection != null) {
                     urlConnection.disconnect();
-                }
+                    }
                 if (reader != null) {
                     try {
                         reader.close();
@@ -209,7 +211,8 @@ public class MainActivity extends AppCompatActivity {
                         Log.e(LOG_TAG, "Error closing stream", e);
                     }
                 }
-            }
+                }
+
 
             //Log.v(LOG_TAG, MoviesJsonStr);
             return MoviesJsonStr;
