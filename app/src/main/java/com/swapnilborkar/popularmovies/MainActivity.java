@@ -81,6 +81,8 @@ public class MainActivity extends AppCompatActivity {
                 String synopsis = popularMovies.synopsis;
                 double rating = popularMovies.rating;
                 String ratingString = String.valueOf(rating);
+                double popularity = popularMovies.popularity;
+                String popularityString = String.valueOf(popularity);
 
 
                 Intent intent = new Intent(MainActivity.this, MovieActivity.class)
@@ -88,7 +90,9 @@ public class MainActivity extends AppCompatActivity {
                         .putExtra("title", title)
                         .putExtra("release", releaseDate)
                         .putExtra("synopsis", synopsis)
-                        .putExtra("rating", ratingString);
+                        .putExtra("rating", ratingString)
+                        .putExtra("popularity", popularityString);
+
                 startActivity(intent);
             }
         });
@@ -108,8 +112,9 @@ public class MainActivity extends AppCompatActivity {
             String synopsis = jsonArray.getJSONObject(i).getString("overview");
             String releaseDate = jsonArray.getJSONObject(i).getString("release_date");
             double rating = jsonArray.getJSONObject(i).getDouble("vote_average");
+            double popularity = jsonArray.getJSONObject(i).getDouble("popularity");
 
-            PopularMovies movie = new PopularMovies(imageUrl, id, title, synopsis, releaseDate, rating);
+            PopularMovies movie = new PopularMovies(imageUrl, id, title, synopsis, releaseDate, rating, popularity);
             popularMoviesArrayList.add(movie);
 
         }
@@ -154,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
             String MoviesJsonStr = null;
             String baseUrl = "http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc";
 
-            //ToDo: Remove API Key before pushing to Github!
+
             //Insert your own API key in /res/strings.xml
             String APIKEY = "&api_key=" + getResources().getString(R.string.api_key);
 

@@ -21,12 +21,10 @@ public class MovieActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movie, container, false);
 
-//        String baseurl = "http://image.tmdb.org/t/p/w780/";
         Intent intent = getActivity().getIntent();
 
-//        final ImageView moviePoster = (ImageView) rootView.findViewById(R.id.img_poster);
 
-        TextView movieSynopsis = (TextView) rootView.findViewById(R.id.txt_synopsis);
+        TextView movieSynopsis = (TextView) rootView.findViewById(R.id.txt_overview);
         movieSynopsis.setText(intent.getStringExtra("synopsis"));
 
         final TextView movieRating = (TextView) rootView.findViewById(R.id.txt_rating);
@@ -36,8 +34,9 @@ public class MovieActivityFragment extends Fragment {
         String releaseYear = intent.getStringExtra("release");
         movieReleaseDate.setText(releaseYear.substring(0, 4));
 
-
-
+        final TextView moviePopularity = (TextView) rootView.findViewById(R.id.txt_popularity);
+        String popularity = intent.getStringExtra("popularity");
+        moviePopularity.setText(popularity.substring(0, 4));
 
 
         return rootView;
@@ -47,7 +46,6 @@ public class MovieActivityFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
 
 
     }

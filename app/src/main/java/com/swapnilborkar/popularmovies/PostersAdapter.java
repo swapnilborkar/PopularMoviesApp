@@ -2,6 +2,7 @@ package com.swapnilborkar.popularmovies;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,13 +39,22 @@ public class PostersAdapter extends ArrayAdapter<PopularMovies> {
             gridRow = LayoutInflater.
                     from(getContext()).
                     inflate(R.layout.grid_item, parent, false);
+        }
+
+        String baseUrl = "http://image.tmdb.org/t/p/w342/";
+        int w;
+        int h;
+
+        if (gridRow.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+
+            w = gridRow.getResources().getDisplayMetrics().widthPixels / 2; //dividing by numColumns
+            h = (int) (w * 1.5); //adjusting height to 1.5x times the width
         } else {
+            w = gridRow.getResources().getDisplayMetrics().widthPixels / 4; //dividing by numColumns
+            h = (int) (w * 1.5); //adjusting height to 1.5x times the width
+        }
 
-            String baseUrl = "http://image.tmdb.org/t/p/w500/";
 
-            //computing width and height for resizing as per screen size
-            int w = getContext().getResources().getDisplayMetrics().widthPixels / 2; //dividing by numColumns
-            int h = (int) (w * 1.5); //adjusting height to 1.5x times the width
 
 
             ImageView imageView = (ImageView) gridRow.findViewById(R.id.imageView);
@@ -54,7 +64,6 @@ public class PostersAdapter extends ArrayAdapter<PopularMovies> {
                     .centerCrop()
                     .into(imageView);
 
-        }
 
         return gridRow;
     }
