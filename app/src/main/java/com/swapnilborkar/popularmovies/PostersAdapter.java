@@ -45,19 +45,21 @@ public class PostersAdapter extends ArrayAdapter<PopularMovies> {
         int w;
         int h;
 
-        if (gridRow.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+
 
             w = gridRow.getResources().getDisplayMetrics().widthPixels / 2; //dividing by numColumns
             h = (int) (w * 1.5); //adjusting height to 1.5x times the width
-        } else {
-            w = gridRow.getResources().getDisplayMetrics().widthPixels / 4; //dividing by numColumns
-            h = (int) (w * 1.5); //adjusting height to 1.5x times the width
+
+        if (gridRow.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            {
+                w = gridRow.getResources().getDisplayMetrics().widthPixels / 4; //dividing by numColumns
+                h = (int) (w * 1.5); //adjusting height to 1.5x times the width
+
+            }
         }
 
 
-
-
-            ImageView imageView = (ImageView) gridRow.findViewById(R.id.imageView);
+        ImageView imageView = (ImageView) gridRow.findViewById(R.id.imageView);
             Picasso.with(mContext)
                     .load(baseUrl + popularMovies.imageUrl)
                     .resize(w, h)

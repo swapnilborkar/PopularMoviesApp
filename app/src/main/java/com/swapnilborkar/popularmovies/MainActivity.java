@@ -1,9 +1,11 @@
 package com.swapnilborkar.popularmovies;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -12,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ProgressBar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<PopularMovies> popularMovies;
     private String LOG_TAG = MainActivity.class.getSimpleName();
 
+
     private void UpdateMovies() {
         //Executes the background Network Call
         FetchMovieTask task = new FetchMovieTask();
@@ -41,7 +45,19 @@ public class MainActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
 
-        UpdateMovies();
+        //Checks if Internet Connection is Available
+        ConnectivityManager cm =
+                (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+
+        if (isConnected) {
+            UpdateMovies();
+        } else {
+
+
+        }
     }
 
     @Override
@@ -50,10 +66,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
 
         GridView gridView = (GridView) findViewById(R.id.grid_view);
         postersAdapter = new PostersAdapter(this, new ArrayList<PopularMovies>());
         gridView.setAdapter(postersAdapter);
+
+
         //fake data
 //        PopularMovies[] popularMovies = {
 //                new PopularMovies("Dirty Grandpa", getText(R.string.fake_movie_summary).toString(), R.drawable.m1),
@@ -146,7 +166,15 @@ public class MainActivity extends AppCompatActivity {
 
     public class FetchMovieTask extends AsyncTask<Void, Void, String> {
 
-        private CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
+
+        ProgressBar pb = (ProgressBar) findViewById(R.id.progress_bar);
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            pb.setVisibility(View.VISIBLE);
+        }
 
         @Override
         protected String doInBackground(Void... params) {
@@ -204,11 +232,11 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(LOG_TAG, "Error ", e);
                 // If the code didn't successfully get the weather data, there's no point in attemping
                 // to parse it.
-                    MoviesJsonStr = null;
+                MoviesJsonStr = null;
             } finally {
                 if (urlConnection != null) {
                     urlConnection.disconnect();
-                    }
+                }
                 if (reader != null) {
                     try {
                         reader.close();
@@ -216,11 +244,14 @@ public class MainActivity extends AppCompatActivity {
                         Log.e(LOG_TAG, "Error closing stream", e);
                     }
                 }
-                }
+            }
+
 
 
             //Log.v(LOG_TAG, MoviesJsonStr);
             return MoviesJsonStr;
+
+
         }
 
 
@@ -236,8 +267,14 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
+                {
                 for (PopularMovies movie : popularMovies) {
+
                     postersAdapter.add(movie);
+
+                }
+
+                    pb.setVisibility(View.GONE);
                 }
             }
         }

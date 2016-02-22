@@ -8,6 +8,15 @@
     tools:context="com.swapnilborkar.popularmovies.MainActivity"
     tools:showIn="@layout/activity_main">
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@style/Base.Widget.AppCompat.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:indeterminate="true" />
+
     <GridView
         android:id="@+id/grid_view"
         android:layout_width="match_parent"

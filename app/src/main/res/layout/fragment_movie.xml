@@ -17,14 +17,40 @@
     tools:context="com.swapnilborkar.popularmovies.MovieActivity"
     tools:showIn="@layout/activity_movie_details">
 
+
     <ImageView
         android:id="@+id/img_poster"
+        android:layout_width="@dimen/placeholder_width"
+        android:layout_height="@dimen/placeholder_height"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/placeholder_poster"
+        android:scaleType="centerCrop"
+        android:src="@drawable/placeholder" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="50dp"
+        android:gravity="left|top">
+
+        <ProgressBar
+            android:id="@+id/poster_progress"
+            style="@style/Base.Widget.AppCompat.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="visible" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/img_poster2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:contentDescription="@string/poster"
-        android:scaleType="centerCrop"
-        android:src="@drawable/placeholder" />
+        android:scaleType="centerCrop" />
 
     <TextView
         android:id="@+id/label_rating"
@@ -45,7 +71,7 @@
         android:layout_marginTop="5dp"
         android:layout_toRightOf="@id/img_poster"
         android:text="@string/rating"
-        android:textSize="50sp" />
+        android:textSize="@dimen/fifty_sp" />
 
     <TextView
         android:id="@+id/label_out_of_ten"
@@ -56,7 +82,7 @@
         android:layout_marginTop="35dp"
         android:layout_toRightOf="@id/txt_rating"
         android:text="@string/out_of_ten"
-        android:textSize="20sp" />
+        android:textSize="@dimen/twenty_sp" />
 
     <TextView
         android:id="@+id/label_popularity"
@@ -78,7 +104,7 @@
         android:layout_marginLeft="45dp"
         android:layout_marginTop="5dp"
         android:layout_toRightOf="@id/img_poster"
-        android:textSize="50sp" />
+        android:textSize="@dimen/fifty_sp" />
 
     <TextView
         android:id="@+id/label_release"
@@ -100,7 +126,7 @@
         android:layout_marginLeft="75dp"
         android:layout_marginTop="10dp"
         android:layout_toRightOf="@id/img_poster"
-        android:textSize="20sp" />
+        android:textSize="@dimen/twenty_sp" />
 
     <TextView
 

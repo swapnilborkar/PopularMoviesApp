@@ -12,6 +12,7 @@
     <string name="out_of_ten">/ 10</string>
     <string name="release">Release Year</string>
     <string name="popularity">Popularity Score</string>
+    <string name="placeholder_poster">placeholder_poster</string>
 
 
     <string-array name="movie_sort">

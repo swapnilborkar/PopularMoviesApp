@@ -33,6 +33,8 @@ public class MovieActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_favorite_movies);
+//
+
         Intent intent = getIntent();
 
         if (intent != null) {
@@ -62,7 +64,10 @@ public class MovieActivity extends AppCompatActivity {
             h = (int) (w * 1.5); //adjusting height to 1.5x times the width
         }
 
-        final ImageView moviePoster = (ImageView) findViewById(R.id.img_poster);
+
+        final ImageView moviePoster = (ImageView) findViewById(R.id.img_poster2);
+
+
         Picasso.with(this)
                 .load(baseUrl + intent.getStringExtra("url"))
                 .resize(w, h)
@@ -73,6 +78,7 @@ public class MovieActivity extends AppCompatActivity {
                     public void onSuccess() {
                         Bitmap bitmap = ((BitmapDrawable) moviePoster.getDrawable()).getBitmap();
                         Palette palette = PaletteTransformation.getPalette(bitmap);
+
 
                         //Apply palette to views here:
                         int defaultColor = getResources().getColor(R.color.colorPrimary);
@@ -123,7 +129,7 @@ public class MovieActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Snackbar snack = Snackbar.make(v, "Show this movie some Love in P2!", Snackbar.LENGTH_LONG);
+                Snackbar snack = Snackbar.make(v, "You'll be able to like this movie in P2!", Snackbar.LENGTH_LONG);
                 View snackView = snack.getView();
                 TextView textView = (TextView) snackView.findViewById(android.support.design.R.id.snackbar_text);
                 textView.setTextColor(getResources().getColor(R.color.black));
