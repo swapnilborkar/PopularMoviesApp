@@ -13,8 +13,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,6 +35,9 @@ public class MainActivity extends AppCompatActivity {
     private PostersAdapter postersAdapter;
     private ArrayList<PopularMovies> popularMovies;
     private String LOG_TAG = MainActivity.class.getSimpleName();
+    private Spinner spinner;
+    private String sortMode;
+
 
 
     private void UpdateMovies() {
@@ -45,6 +50,35 @@ public class MainActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
 
+        //Spinner on Start
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+
+                switch (position) {
+                    case 0:
+                        //Toast.makeText(MainActivity.this, "Zero", Toast.LENGTH_SHORT).show();
+                        sortMode = "sort_by=popularity.desc";
+                        UpdateMovies();
+                        break;
+
+                    case 1:
+                        //Toast.makeText(MainActivity.this, "One", Toast.LENGTH_SHORT).show();
+                        sortMode = "sort_by=vote_average.desc";
+                        UpdateMovies();
+                        break;
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+
+        });
+
+
         //Checks if Internet Connection is Available
         ConnectivityManager cm =
                 (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -52,13 +86,18 @@ public class MainActivity extends AppCompatActivity {
         boolean isConnected = activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
 
+
         if (isConnected) {
             UpdateMovies();
         } else {
 
+            //ToDo: Add code for no network connection
 
         }
+
+
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,27 +107,20 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        spinner = (Spinner) findViewById(R.id.spinner);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.movie_sort, android.R.layout.simple_spinner_item);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
 
         GridView gridView = (GridView) findViewById(R.id.grid_view);
         postersAdapter = new PostersAdapter(this, new ArrayList<PopularMovies>());
         gridView.setAdapter(postersAdapter);
 
 
-        //fake data
-//        PopularMovies[] popularMovies = {
-//                new PopularMovies("Dirty Grandpa", getText(R.string.fake_movie_summary).toString(), R.drawable.m1),
-//                new PopularMovies("Ride Along 2", getText(R.string.fake_movie_summary).toString(), R.drawable.m2),
-//                new PopularMovies("Deadpool", getText(R.string.fake_movie_summary).toString(), R.drawable.m3),
-//                new PopularMovies("Batman v Superman: Dawn of Justice", getText(R.string.fake_movie_summary).toString(), R.drawable.m4),
-//                new PopularMovies("Captain America: Civil War", getText(R.string.fake_movie_summary).toString(), R.drawable.m5),
-//                new PopularMovies("Suicide Squad", getText(R.string.fake_movie_summary).toString(), R.drawable.m6),
-//                new PopularMovies("Get A Job", getText(R.string.fake_movie_summary).toString(), R.drawable.m7),
-//                new PopularMovies("The Jungle Book", getText(R.string.fake_movie_summary).toString(), R.drawable.m8)
-//        };
-
-
-        //postersAdapter = new PostersAdapter(this, Arrays.asList(popularMovies));
-        //gridView.setAdapter(postersAdapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
@@ -116,6 +148,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
     }
 
     public ArrayList<PopularMovies> getPopularMoviesFromJson(String MovieJsonString) throws JSONException {
@@ -164,6 +198,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
     public class FetchMovieTask extends AsyncTask<Void, Void, String> {
 
 
@@ -185,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Will contain the raw JSON response as a string.
             String MoviesJsonStr = null;
-            String baseUrl = "http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc";
+            String baseUrl = "http://api.themoviedb.org/3/discover/movie?";
 
 
             //Insert your own API key in /res/strings.xml
@@ -196,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
                 // Construct the URL for the OpenWeatherMap query
                 // Possible parameters are avaiable at OWM's forecast API page, at
                 // http://openweathermap.org/API#forecast
-                URL url = new URL(baseUrl + APIKEY);
+                URL url = new URL(baseUrl + sortMode + APIKEY);
 
 
                 // Create the request to OpenWeatherMap, and open the connection

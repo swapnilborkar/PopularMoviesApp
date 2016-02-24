@@ -30,8 +30,8 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginLeft="70dp"
+        android:layout_marginTop="120dp"
         android:gravity="left|top">
 
         <ProgressBar
@@ -54,6 +54,7 @@
 
     <TextView
         android:id="@+id/label_rating"
+        style="@style/TextAppearance.AppCompat.Headline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="75dp"

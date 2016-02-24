@@ -67,6 +67,9 @@ public class MovieActivity extends AppCompatActivity {
 
         final ImageView moviePoster = (ImageView) findViewById(R.id.img_poster2);
 
+        String posterURL = intent.getStringExtra("url");
+
+
 
         Picasso.with(this)
                 .load(baseUrl + intent.getStringExtra("url"))
