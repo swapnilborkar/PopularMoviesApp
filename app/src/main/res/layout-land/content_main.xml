@@ -29,4 +29,30 @@
         android:stretchMode="columnWidth"
         android:verticalSpacing="@dimen/grid_spacing" />
 
+    <ImageView
+        android:id="@+id/no_internet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/content_desc_internet_image"
+        android:src="@drawable/icon_cry"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/txt_no_internet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/no_internet"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="20dp"
+        android:text="@string/no_internet"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:visibility="invisible" />
+
 </RelativeLayout>

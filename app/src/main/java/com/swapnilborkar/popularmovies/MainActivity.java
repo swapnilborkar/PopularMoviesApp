@@ -2,6 +2,7 @@ package com.swapnilborkar.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -15,8 +16,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,8 +43,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
     private void UpdateMovies() {
         //Executes the background Network Call
+
         FetchMovieTask task = new FetchMovieTask();
         task.execute();
     }
@@ -50,22 +55,43 @@ public class MainActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
 
+        checkConnection();
+        SharedPreferences prefs = getPreferences(0);
+        spinner.setSelection(prefs.getInt("spinnerSelection", 0));
+
+
         //Spinner on Start
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 
+                SharedPreferences.Editor editor = getPreferences(0).edit();
+                int selectedPosition;
+
                 switch (position) {
+
+
                     case 0:
-                        //Toast.makeText(MainActivity.this, "Zero", Toast.LENGTH_SHORT).show();
+
+                        selectedPosition = spinner.getSelectedItemPosition();
+                        editor.putInt("spinnerSelection", selectedPosition);
+                        editor.apply();
                         sortMode = "sort_by=popularity.desc";
-                        UpdateMovies();
+                        if (checkConnection()) {
+                            UpdateMovies();
+                        }
                         break;
 
                     case 1:
-                        //Toast.makeText(MainActivity.this, "One", Toast.LENGTH_SHORT).show();
+
+
+                        selectedPosition = spinner.getSelectedItemPosition();
+                        editor.putInt("spinnerSelection", selectedPosition);
+                        editor.apply();
                         sortMode = "sort_by=vote_average.desc";
-                        UpdateMovies();
+                        if (checkConnection()) {
+                            UpdateMovies();
+                        }
                         break;
                 }
 
@@ -73,31 +99,42 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
+
             }
 
         });
 
 
+    }
+
+
+    public boolean checkConnection() {
         //Checks if Internet Connection is Available
-        ConnectivityManager cm =
-                (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
 
+        ImageView noInternet = (ImageView) findViewById(R.id.no_internet);
+        TextView txtNoInternet = (TextView) findViewById(R.id.txt_no_internet);
+
 
         if (isConnected) {
+
+            noInternet.setVisibility(View.GONE);
+            txtNoInternet.setVisibility(View.GONE);
             UpdateMovies();
+            return true;
+
         } else {
 
-            //ToDo: Add code for no network connection
+
+            noInternet.setVisibility(View.VISIBLE);
+            txtNoInternet.setVisibility(View.VISIBLE);
+            return false;
 
         }
-
-
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,17 +147,15 @@ public class MainActivity extends AppCompatActivity {
         spinner = (Spinner) findViewById(R.id.spinner);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.movie_sort, android.R.layout.simple_spinner_item);
+                R.array.movie_sort, R.layout.toolbar_spinner_item);
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
 
-        GridView gridView = (GridView) findViewById(R.id.grid_view);
+        final GridView gridView = (GridView) findViewById(R.id.grid_view);
         postersAdapter = new PostersAdapter(this, new ArrayList<PopularMovies>());
         gridView.setAdapter(postersAdapter);
-
-
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
@@ -152,11 +187,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     public ArrayList<PopularMovies> getPopularMoviesFromJson(String MovieJsonString) throws JSONException {
+
 
         ArrayList<PopularMovies> popularMoviesArrayList = new ArrayList<>();
         JSONObject jsonObject = new JSONObject(MovieJsonString);
         JSONArray jsonArray = jsonObject.getJSONArray("results");
+
 
         //parsing every entry in the array using a loop
         for (int i = 0; i < jsonArray.length(); i++) {
@@ -209,6 +247,8 @@ public class MainActivity extends AppCompatActivity {
             super.onPreExecute();
 
             pb.setVisibility(View.VISIBLE);
+
+
         }
 
         @Override

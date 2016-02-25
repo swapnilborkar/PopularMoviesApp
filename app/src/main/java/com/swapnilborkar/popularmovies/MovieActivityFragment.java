@@ -27,6 +27,11 @@ public class MovieActivityFragment extends Fragment {
         TextView movieSynopsis = (TextView) rootView.findViewById(R.id.txt_overview);
         movieSynopsis.setText(intent.getStringExtra("synopsis"));
 
+        if (movieSynopsis.getText() == null) {
+            movieSynopsis.setText(getResources().getText(R.string.no_synopsis));
+        }
+
+
         final TextView movieRating = (TextView) rootView.findViewById(R.id.txt_rating);
         movieRating.setText(intent.getStringExtra("rating"));
 
