@@ -14,7 +14,10 @@ public class PopularMovies implements Parcelable {
             return new PopularMovies[size];
         }
     };
+
+
     String imageUrl;
+    String backDropUrl;
     int id;
     String title;
     String synopsis;
@@ -24,7 +27,7 @@ public class PopularMovies implements Parcelable {
 
 
 
-    public PopularMovies(String imageUrl, int id, String title, String synopsis, String releaseDate, double rating, double popularity) {
+    public PopularMovies(String imageUrl, int id, String title, String synopsis, String releaseDate, double rating, double popularity, String backDropUrl) {
         this.imageUrl = imageUrl;
         this.id = id;
         this.title = title;
@@ -32,6 +35,7 @@ public class PopularMovies implements Parcelable {
         this.releaseDate = releaseDate;
         this.rating = rating;
         this.popularity = popularity;
+        this.backDropUrl = backDropUrl;
 
     }
 
@@ -43,6 +47,7 @@ public class PopularMovies implements Parcelable {
         this.releaseDate = in.readString();
         this.rating = in.readDouble();
         this.popularity = in.readDouble();
+        this.backDropUrl = in.readString();
     }
 
     public String getImageUrl() {
@@ -73,6 +78,8 @@ public class PopularMovies implements Parcelable {
         return popularity;
     }
 
+    public String getBackDropUrl(){return backDropUrl;}
+
     @Override
     public int describeContents() {
         return 0;
@@ -87,5 +94,6 @@ public class PopularMovies implements Parcelable {
         dest.writeString(this.releaseDate);
         dest.writeDouble(this.rating);
         dest.writeDouble(this.popularity);
+        dest.writeString(this.backDropUrl);
     }
 }

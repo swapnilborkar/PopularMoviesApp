@@ -31,15 +31,15 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
+import butterknife.Bind;
+
 public class MainActivity extends AppCompatActivity {
 
+    @Bind(R.id.spinner) Spinner spinner;
     private PostersAdapter postersAdapter;
     private ArrayList<PopularMovies> popularMovies;
     private String LOG_TAG = MainActivity.class.getSimpleName();
-    private Spinner spinner;
-    private String sortMode;
-
-
+    private static String sortMode;
 
 
     private void UpdateMovies() {
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                         selectedPosition = spinner.getSelectedItemPosition();
                         editor.putInt("spinnerSelection", selectedPosition);
                         editor.apply();
-                        sortMode = "sort_by=popularity.desc";
+                        sortMode = "popular";
                         if (checkConnection()) {
                             UpdateMovies();
                         }
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                         selectedPosition = spinner.getSelectedItemPosition();
                         editor.putInt("spinnerSelection", selectedPosition);
                         editor.apply();
-                        sortMode = "sort_by=vote_average.desc";
+                        sortMode = "top_rated";
                         if (checkConnection()) {
                             UpdateMovies();
                         }
@@ -140,7 +140,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
 
         spinner = (Spinner) findViewById(R.id.spinner);
 
@@ -160,7 +162,9 @@ public class MainActivity extends AppCompatActivity {
                                     int position, long id) {
 
                 PopularMovies popularMovies = postersAdapter.getItem(position);
+                int movie_id = popularMovies.id;
                 String url = popularMovies.imageUrl;
+                String backdrop = popularMovies.backDropUrl;
                 String title = popularMovies.title;
                 String releaseDate = popularMovies.releaseDate;
                 String synopsis = popularMovies.synopsis;
@@ -171,12 +175,14 @@ public class MainActivity extends AppCompatActivity {
 
 
                 Intent intent = new Intent(MainActivity.this, MovieActivity.class)
+                        .putExtra("id", movie_id)
                         .putExtra("url", url)
                         .putExtra("title", title)
                         .putExtra("release", releaseDate)
                         .putExtra("synopsis", synopsis)
                         .putExtra("rating", ratingString)
-                        .putExtra("popularity", popularityString);
+                        .putExtra("popularity", popularityString)
+                        .putExtra("backdrop", backdrop);
 
                 startActivity(intent);
             }
@@ -203,8 +209,9 @@ public class MainActivity extends AppCompatActivity {
             String releaseDate = jsonArray.getJSONObject(i).getString("release_date");
             double rating = jsonArray.getJSONObject(i).getDouble("vote_average");
             double popularity = jsonArray.getJSONObject(i).getDouble("popularity");
+            String backDropUrl = jsonArray.getJSONObject(i).getString("backdrop_path");
 
-            PopularMovies movie = new PopularMovies(imageUrl, id, title, synopsis, releaseDate, rating, popularity);
+            PopularMovies movie = new PopularMovies(imageUrl, id, title, synopsis, releaseDate, rating, popularity, backDropUrl);
             popularMoviesArrayList.add(movie);
 
         }
@@ -258,19 +265,22 @@ public class MainActivity extends AppCompatActivity {
 
             // Will contain the raw JSON response as a string.
             String MoviesJsonStr = null;
-            String baseUrl = "http://api.themoviedb.org/3/discover/movie?";
+            String baseUrl = "http://api.themoviedb.org/3/movie/";
 
 
             //Insert your own API key in /res/strings.xml
-            String APIKEY = "&api_key=" + getResources().getString(R.string.api_key);
+            String APIKEY = "?api_key=" + getResources().getString(R.string.api_key);
 
 
             try {
                 // Construct the URL for the OpenWeatherMap query
                 // Possible parameters are avaiable at OWM's forecast API page, at
                 // http://openweathermap.org/API#forecast
-                URL url = new URL(baseUrl + sortMode + APIKEY);
+                if (sortMode ==null) {
+                   sortMode = "popular";
+                }
 
+                URL url = new URL(baseUrl + sortMode + APIKEY);
 
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -319,11 +329,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-
-
             //Log.v(LOG_TAG, MoviesJsonStr);
             return MoviesJsonStr;
-
 
         }
 

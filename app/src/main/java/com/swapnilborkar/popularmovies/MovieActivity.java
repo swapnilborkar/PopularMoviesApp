@@ -1,5 +1,6 @@
 package com.swapnilborkar.popularmovies;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
@@ -35,13 +36,14 @@ public class MovieActivity extends AppCompatActivity {
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_favorite_movies);
 //
 
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
 
         if (intent != null) {
             if (getSupportActionBar() != null) {
 
                 getSupportActionBar().setDisplayShowTitleEnabled(true);
-                setTitle(intent.getStringExtra("title"));
+                String title = intent.getStringExtra("title");
+                setTitle(title);
             }
         }
 
@@ -67,6 +69,7 @@ public class MovieActivity extends AppCompatActivity {
 
         final ImageView moviePoster = (ImageView) findViewById(R.id.img_poster2);
 
+        assert intent != null;
         String posterURL = intent.getStringExtra("url");
 
 
@@ -84,10 +87,10 @@ public class MovieActivity extends AppCompatActivity {
 
 
                         //Apply palette to views here:
-                        int defaultColor = getResources().getColor(R.color.colorPrimary);
-                        int colorAccent = getResources().getColor(R.color.colorAccent);
+                        int defaultColor = getColor(MovieActivity.this, R.color.colorPrimary);
+                        int colorAccent = getColor(MovieActivity.this, R.color.colorAccent);
                         int lightVibrantColor = palette.getLightVibrantColor(defaultColor);
-                        int vibrantColor = palette.getVibrantColor(colorAccent);
+                        //int vibrantColor = palette.getVibrantColor(colorAccent);
 
 
                         if (getSupportActionBar() != null) {
@@ -121,7 +124,7 @@ public class MovieActivity extends AppCompatActivity {
                         }
 
                         //fab.setBackgroundTintList(ColorStateList.valueOf(vibrantColor));
-                        int white = getResources().getColor(R.color.white);
+                        int white = getColor(MovieActivity.this, R.color.white);
                         fab.setBackgroundTintList(ColorStateList.valueOf(white));
                         fab.show();
 
@@ -132,10 +135,13 @@ public class MovieActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Snackbar snack = Snackbar.make(v, "You'll be able to like this movie in P2!", Snackbar.LENGTH_LONG);
+
+                String title = intent.getStringExtra("title");
+                String addFavorite = (String) getResources().getText(R.string.added_to_favorites);
+                Snackbar snack = Snackbar.make(v, title + " " + addFavorite, Snackbar.LENGTH_LONG);
                 View snackView = snack.getView();
                 TextView textView = (TextView) snackView.findViewById(android.support.design.R.id.snackbar_text);
-                textView.setTextColor(getResources().getColor(R.color.black));
+                textView.setTextColor(getColor(MovieActivity.this, R.color.black));
                 ViewGroup group = (ViewGroup) snack.getView();
                 group.setBackgroundColor(ContextCompat.getColor(MovieActivity.this, R.color.white));
                 snack.show();
@@ -143,5 +149,16 @@ public class MovieActivity extends AppCompatActivity {
         });
 
     }
+
+    public static int getColor(Context context, int id) {
+        final int version = Build.VERSION.SDK_INT;
+        if (version >= 23) {
+            return ContextCompat.getColor(context, id);
+        } else {
+            return context.getResources().getColor(id);
+        }
+    }
+
+
 
 }

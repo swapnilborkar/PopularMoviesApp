@@ -15,9 +15,11 @@
     <string name="placeholder_poster">placeholder_poster</string>
     <string name="no_internet">DAGNABIT! No or very purr Internet!</string>
     <string name="retry_connection">Retry</string>
+    <string name="added_to_favorites">is added to your Favorites!</string>
 
     <string name="pref_sort_mode_default">sort_by=popularity.desc</string>
     <string name="content_desc_internet_image">No internet</string>
+    <string name="trailer_label">Movie Trailer</string>
 
 
     <string-array name="movie_sort">
