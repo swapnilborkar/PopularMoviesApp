@@ -30,9 +30,9 @@
             android:id="@+id/lin1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="70dp"
+            android:layout_marginStart="70dp"
             android:layout_marginTop="120dp"
-            android:gravity="left|top">
+            android:gravity="start|top">
 
             <ProgressBar
                 android:id="@+id/poster_progress"
@@ -56,7 +56,7 @@
             android:id="@+id/lin2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/img_poster"
+            android:layout_toEndOf="@id/img_poster"
             android:orientation="vertical">
 
             <LinearLayout
@@ -99,7 +99,7 @@
                             android:id="@+id/label_out_of_ten"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
                             android:layout_marginTop="12dp"
                             android:ellipsize="end"
                             android:text="@string/out_of_ten"
@@ -120,7 +120,7 @@
                         style="?android:attr/listSeparatorTextViewStyle"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="30dp"
+                        android:layout_marginStart="30dp"
                         android:ellipsize="end"
                         android:text="@string/popularity"
                         android:textAlignment="center"
@@ -131,7 +131,7 @@
                         android:id="@+id/txt_popularity"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="30dp"
+                        android:layout_marginStart="30dp"
                         android:ellipsize="end"
                         android:textAlignment="center"
                         android:textSize="30sp" />
@@ -148,7 +148,7 @@
                         style="?android:attr/listSeparatorTextViewStyle"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="30dp"
+                        android:layout_marginStart="30dp"
                         android:ellipsize="end"
                         android:text="@string/release"
                         android:textAlignment="center"
@@ -159,7 +159,7 @@
                         android:id="@+id/txt_release"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="35dp"
+                        android:layout_marginStart="35dp"
                         android:ellipsize="end"
                         android:textAlignment="center"
                         android:textSize="30sp" />
@@ -174,7 +174,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/lin2"
-            android:layout_toRightOf="@id/img_poster"
+            android:layout_toEndOf="@id/img_poster"
             android:orientation="vertical">
 
 
@@ -211,9 +211,9 @@
 
             <ImageView
                 android:id="@+id/img_backdrop"
-                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/placeholder_poster"
                 android:scaleType="centerCrop" />

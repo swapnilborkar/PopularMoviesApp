@@ -26,6 +26,15 @@ import com.squareup.picasso.Picasso;
 
 public class MovieActivity extends AppCompatActivity {
 
+    public static int getColor(Context context, int id) {
+        final int version = Build.VERSION.SDK_INT;
+        if (version >= 23) {
+            return ContextCompat.getColor(context, id);
+        } else {
+            return context.getResources().getColor(id);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +46,17 @@ public class MovieActivity extends AppCompatActivity {
 //
 
         final Intent intent = getIntent();
+
+
+//        if (intent!= null) {
+//            //Get EXTRA from intent and attach to Fragment as Argument
+//            String text = getIntent().getStringExtra("url");
+//            Bundle args = new Bundle();
+//            args.putString("ARGUMENTS", text);
+//            MovieActivityFragment detailFragment = new MovieActivityFragment();
+//            detailFragment.setArguments(args);
+//            getSupportFragmentManager().beginTransaction().replace(R.id.container, detailFragment).commit();
+//        }
 
         if (intent != null) {
             if (getSupportActionBar() != null) {
@@ -73,11 +93,13 @@ public class MovieActivity extends AppCompatActivity {
         String posterURL = intent.getStringExtra("url");
 
 
-
+        assert moviePoster != null;
         Picasso.with(this)
-                .load(baseUrl + intent.getStringExtra("url"))
+                .load(baseUrl + posterURL)
                 .resize(w, h)
                 .centerCrop()
+                .error(R.drawable.icon_cry)
+                .placeholder(R.drawable.placeholder)
                 .transform(PaletteTransformation.instance())
                 .into(moviePoster, new Callback.EmptyCallback() {
                     @Override
@@ -125,12 +147,14 @@ public class MovieActivity extends AppCompatActivity {
 
                         //fab.setBackgroundTintList(ColorStateList.valueOf(vibrantColor));
                         int white = getColor(MovieActivity.this, R.color.white);
+                        assert fab != null;
                         fab.setBackgroundTintList(ColorStateList.valueOf(white));
                         fab.show();
 
                     }
                 });
 
+        assert fab != null;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,15 +172,6 @@ public class MovieActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    public static int getColor(Context context, int id) {
-        final int version = Build.VERSION.SDK_INT;
-        if (version >= 23) {
-            return ContextCompat.getColor(context, id);
-        } else {
-            return context.getResources().getColor(id);
-        }
     }
 
 
