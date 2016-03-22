@@ -18,6 +18,7 @@ public class PostersAdapter extends ArrayAdapter<PopularMovies> {
 
     MainActivity mainActivity;
     private Context mContext;
+    private List<PopularMovies> movieDataSource;
 
 
     public PostersAdapter(Activity context, List<PopularMovies> popularMovies) {
@@ -25,6 +26,12 @@ public class PostersAdapter extends ArrayAdapter<PopularMovies> {
         super(context, 0, popularMovies);
         mContext = context;
     }
+
+    public List<PopularMovies> getDataSource() {
+        return movieDataSource;
+    }
+
+
 
 
     @Override

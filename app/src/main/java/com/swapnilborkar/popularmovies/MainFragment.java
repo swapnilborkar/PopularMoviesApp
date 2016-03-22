@@ -1,6 +1,5 @@
 package com.swapnilborkar.popularmovies;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -36,14 +35,19 @@ public class MainFragment extends Fragment {
 //    ProgressBar pb;
     @Bind(R.id.grid_view)
     GridView gridView;
+    OnMovieSelectedListener movieSelectedListener;
     private PostersAdapter postersAdapter;
     private ArrayList<PopularMovies> popularMovies;
     private String LOG_TAG = MainActivity.class.getSimpleName();
-    private Boolean twoPaneLayout = false;
 
 
     public MainFragment() {
 
+    }
+
+    public void setMovieSelectedListener(OnMovieSelectedListener movieSelectedListener) {
+        // Setting this fragment as a listener for when a FeedItem is clicked
+        this.movieSelectedListener = movieSelectedListener;
     }
 
     public void getSortMode(String sortMode) {
@@ -57,20 +61,19 @@ public class MainFragment extends Fragment {
         task.execute();
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        if (rootView.findViewById(R.id.container) != null) {
-            twoPaneLayout = true;
 
-        }
 
         ((MainActivity) getActivity()).setSpinner();
 
-        GridView gridView = (GridView) rootView.findViewById(R.id.grid_view);
+        final GridView gridView = (GridView) rootView.findViewById(R.id.grid_view);
+        if (((MainActivity) getActivity()).isDualPane()) {
+            gridView.setNumColumns(2);
+        }
         postersAdapter = new PostersAdapter(getActivity(), new ArrayList<PopularMovies>());
         gridView.setAdapter(postersAdapter);
 
@@ -78,30 +81,32 @@ public class MainFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
 
-                PopularMovies popularMovies = postersAdapter.getItem(position);
-                int movie_id = popularMovies.id;
-                String url = popularMovies.imageUrl;
-                String backdrop = popularMovies.backDropUrl;
-                String title = popularMovies.title;
-                String releaseDate = popularMovies.releaseDate;
-                String synopsis = popularMovies.synopsis;
-                double rating = popularMovies.rating;
-                String ratingString = String.valueOf(rating);
-                double popularity = popularMovies.popularity;
-                String popularityString = String.valueOf(popularity);
+                movieSelectedListener.onMovieSelected(postersAdapter.getDataSource().get(position));
 
-
-                Intent intent = new Intent(getActivity(), MovieActivity.class)
-                        .putExtra("id", movie_id)
-                        .putExtra("url", url)
-                        .putExtra("title", title)
-                        .putExtra("release", releaseDate)
-                        .putExtra("synopsis", synopsis)
-                        .putExtra("rating", ratingString)
-                        .putExtra("popularity", popularityString)
-                        .putExtra("backdrop", backdrop);
-
-                startActivity(intent);
+//                PopularMovies popularMovies = postersAdapter.getItem(position);
+//                int movie_id = popularMovies.id;
+//                String url = popularMovies.imageUrl;
+//                String backdrop = popularMovies.backDropUrl;
+//                String title = popularMovies.title;
+//                String releaseDate = popularMovies.releaseDate;
+//                String synopsis = popularMovies.synopsis;
+//                double rating = popularMovies.rating;
+//                String ratingString = String.valueOf(rating);
+//                double popularity = popularMovies.popularity;
+//                String popularityString = String.valueOf(popularity);
+//
+//
+//                Intent intent = new Intent(getActivity(), MovieActivity.class)
+//                        .putExtra("id", movie_id)
+//                        .putExtra("url", url)
+//                        .putExtra("title", title)
+//                        .putExtra("release", releaseDate)
+//                        .putExtra("synopsis", synopsis)
+//                        .putExtra("rating", ratingString)
+//                        .putExtra("popularity", popularityString)
+//                        .putExtra("backdrop", backdrop);
+//
+//                startActivity(intent);
 
 
             }
@@ -136,6 +141,14 @@ public class MainFragment extends Fragment {
         }
 
         return popularMoviesArrayList;
+    }
+
+    public interface OnMovieSelectedListener {
+        // Interface for when a MovieItem is clicked
+        void onMovieSelected(PopularMovies selectedMovie);
+
+
+
     }
 
     public class FetchMovieTask extends AsyncTask<Void, Void, String> {

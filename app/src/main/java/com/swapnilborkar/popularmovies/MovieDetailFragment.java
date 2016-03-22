@@ -1,9 +1,12 @@
 package com.swapnilborkar.popularmovies;
 
-import android.content.Intent;
+import android.content.Context;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,14 +26,28 @@ import java.net.URL;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MovieActivityFragment extends Fragment {
+public class MovieDetailFragment extends Fragment {
 
-    private static final String LOG_TAG = "MovieActivityFragment:";
+    private static final String LOG_TAG = "MovieDetailFragment:";
+//    public static Palette palette;
+//    int defaultColor;
+//    int colorAccent;
+//    int lightVibrantColor;
+//    int alternateColor;
 
-    public MovieActivityFragment() {
+    public MovieDetailFragment() {
 
 
+    }
 
+
+    public static int getColor(Context context, int id) {
+        final int version = Build.VERSION.SDK_INT;
+        if (version >= 23) {
+            return ContextCompat.getColor(context, id);
+        } else {
+            return context.getResources().getColor(id);
+        }
     }
 
     @Override
@@ -38,11 +55,81 @@ public class MovieActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movie, container, false);
 
-        Intent intent = getActivity().getIntent();
+
+//        Intent intent = getActivity().getIntent();
+
+
+        //Loading Image and Applying Pal
+        String baseUrl = "http://image.tmdb.org/t/p/w500/";
+
+        int w;
+        int h;
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+
+            w = getResources().getDisplayMetrics().widthPixels / 4; //dividing by numColumns
+            h = (int) (w * 1.5); //adjusting height to 1.5x times the width
+        } else {
+            w = getResources().getDisplayMetrics().widthPixels / 2; //dividing by numColumns
+            h = (int) (w * 1.5); //adjusting height to 1.5x times the width
+        }
+
+
+        final ImageView moviePoster = (ImageView) rootView.findViewById(R.id.img_poster2);
+
+
+        String posterURL = getArguments().getString("movie_poster_url");
+
+
+        assert moviePoster != null;
+        Picasso.with(getContext())
+                .load(baseUrl + posterURL)
+                .resize(w, h)
+                .centerCrop()
+                .error(R.drawable.icon_cry)
+                .placeholder(R.drawable.placeholder)
+                .transform(PaletteTransformation.instance())
+                .into(moviePoster);
+        //, new Callback.EmptyCallback() {
+//                    @Override
+//                    public void onSuccess() {
+////                        Bitmap bitmap = ((BitmapDrawable) moviePoster.getDrawable()).getBitmap();
+////                        palette = PaletteTransformation.getPalette(bitmap);
+////
+////                        defaultColor = getColor(getContext(), R.color.colorPrimary);
+////                        colorAccent = getColor(getContext(), R.color.colorAccent);
+////                        lightVibrantColor = palette.getLightVibrantColor(defaultColor);
+////
+////
+////                        if (lightVibrantColor != defaultColor) {
+////                            float[] hsv = new float[3];
+////                            Color.colorToHSV(lightVibrantColor, hsv);
+////                            hsv[2] *= 0.8f;
+////                            int colorPrimaryDark = Color.HSVToColor(hsv);
+////
+////
+////                                ((AppCompatActivity) getActivity()).getSupportActionBar().setBackgroundDrawable(new ColorDrawable(lightVibrantColor));
+////
+////                            if (Build.VERSION.SDK_INT >= 21)
+////                                getActivity().getWindow().setStatusBarColor(colorPrimaryDark);
+////                        }
+////
+////                        if (lightVibrantColor == defaultColor) {
+////                            alternateColor = palette.getLightMutedColor(defaultColor);
+////
+////                                ((AppCompatActivity)getActivity()).getSupportActionBar().setBackgroundDrawable(new ColorDrawable(alternateColor));
+////                                float[] hsv = new float[3];
+////                                Color.colorToHSV(alternateColor, hsv);
+////                                hsv[2] *= 0.8f;
+////                                int colorPrimaryDark = Color.HSVToColor(hsv);
+////
+////                                if (Build.VERSION.SDK_INT >= 21)
+////                                    getActivity().getWindow().setStatusBarColor(colorPrimaryDark);
+//}}});
 
 
         TextView movieSynopsis = (TextView) rootView.findViewById(R.id.txt_overview);
-        movieSynopsis.setText(intent.getStringExtra("synopsis"));
+        movieSynopsis.setText(getArguments().getString("movie_synopsis", "null"));
 
         if (movieSynopsis.getText() == null) {
             movieSynopsis.setText(getResources().getText(R.string.no_synopsis));
@@ -50,47 +137,41 @@ public class MovieActivityFragment extends Fragment {
 
 
         final TextView movieRating = (TextView) rootView.findViewById(R.id.txt_rating);
-        movieRating.setText(intent.getStringExtra("rating"));
+        movieRating.setText(getArguments().getString("movie_rating", "null"));
 
         final TextView movieReleaseDate = (TextView) rootView.findViewById(R.id.txt_release);
-        String releaseYear = intent.getStringExtra("release");
+        String releaseYear = getArguments().getString("movie_release_date", "null");
         movieReleaseDate.setText(releaseYear.substring(0, 4));
 
         final TextView moviePopularity = (TextView) rootView.findViewById(R.id.txt_popularity);
-        String popularity = intent.getStringExtra("popularity");
+        String popularity = String.valueOf(getArguments().getDouble("movie_popularity", 0.0));
         moviePopularity.setText(popularity.substring(0, 4));
 
         final String backdropBaseUrl = "http://image.tmdb.org/t/p/w500/";
-        String backdropUrl = getActivity().getIntent().getStringExtra("backdrop");
+        String backdropUrl = getArguments().getString("movie_backdrop_url", "null");
 
-        final ImageView backdropImage = (ImageView)rootView.findViewById(R.id.img_backdrop);
+        final ImageView backdropImage = (ImageView) rootView.findViewById(R.id.img_backdrop);
 
         Picasso.with(getContext())
                 .load(backdropBaseUrl + backdropUrl).into(backdropImage);
 
 
-                        FetchReviewTask reviewTask = new FetchReviewTask();
-                        reviewTask.execute();
+        FetchReviewTask reviewTask = new FetchReviewTask();
+        reviewTask.execute();
 
-                        FetchTrailerTask trailerTask = new FetchTrailerTask();
-                        trailerTask.execute();
-
+        FetchTrailerTask trailerTask = new FetchTrailerTask();
+        trailerTask.execute();
 
         return rootView;
-
-    }
-
-    public String getMovieId()
-    {
-        Intent intent = getActivity().getIntent();
-        return Integer.toString(intent.getIntExtra("id", 0));
     }
 
 
+    public String getMovieId() {
+        return Integer.toString(getArguments().getInt("movie_id", 0));
+    }
 
 
-    public class FetchReviewTask extends AsyncTask<Void, Void, String>
-    {
+    public class FetchReviewTask extends AsyncTask<Void, Void, String> {
 
         String endpoint = "/reviews";
         String id = getMovieId();
@@ -112,8 +193,7 @@ public class MovieActivityFragment extends Fragment {
                 // Construct the URL for the OpenWeatherMap query
                 // Possible parameters are avaiable at OWM's forecast API page, at
                 // http://openweathermap.org/API#forecast
-                URL url = new URL(baseUrl +  id  + endpoint + APIKEY);
-
+                URL url = new URL(baseUrl + id + endpoint + APIKEY);
 
 
                 // Create the request to OpenWeatherMap, and open the connection
@@ -163,14 +243,13 @@ public class MovieActivityFragment extends Fragment {
                 }
             }
 
-            Log.v("MovieActivityFragment:", ReviewJsonStr);
+            Log.v("MovieDetailFragment:", ReviewJsonStr);
             return null;
         }
     }
 
 
-    public class FetchTrailerTask extends AsyncTask<Void, Void, String>
-    {
+    public class FetchTrailerTask extends AsyncTask<Void, Void, String> {
 
         String endpoint = "/videos";
         String id = getMovieId();
@@ -193,7 +272,7 @@ public class MovieActivityFragment extends Fragment {
                 // Construct the URL for the OpenWeatherMap query
                 // Possible parameters are avaiable at OWM's forecast API page, at
                 // http://openweathermap.org/API#forecast
-                URL url = new URL(baseUrl +  id  + endpoint + APIKEY);
+                URL url = new URL(baseUrl + id + endpoint + APIKEY);
 
 
                 // Create the request to OpenWeatherMap, and open the connection
@@ -243,7 +322,7 @@ public class MovieActivityFragment extends Fragment {
                 }
             }
 
-            Log.v("MovieActivityFragment:", ReviewJsonStr);
+            Log.v("MovieDetailFragment:", ReviewJsonStr);
             return null;
         }
     }

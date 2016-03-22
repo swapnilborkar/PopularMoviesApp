@@ -10,10 +10,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-public class MainActivity extends AppCompatActivity {
-
+public class MainActivity extends AppCompatActivity implements MainFragment.OnMovieSelectedListener {
 
     private static String sortMode;
+    private Boolean dualPaneLayout = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,14 +24,22 @@ public class MainActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+            isDualPane();
 
             MainFragment fragment = new MainFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.add(R.id.frame_main, fragment);
             transaction.commit();
 
+
         }
     }
+
+    public Boolean isDualPane() {
+        dualPaneLayout = findViewById(R.id.container) != null;
+        return dualPaneLayout;
+    }
+
 
     public void setSpinner() {
 
@@ -90,7 +98,36 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
+    }
+
+    @Override
+    public void onMovieSelected(PopularMovies selectedMovie) {
+
+        MovieDetailFragment movieDetailFragment = new MovieDetailFragment();
+        Bundle movieBundle = new Bundle();
+        movieBundle.putString("movie_title", selectedMovie.getTitle());
+        movieBundle.putInt("movie_id", selectedMovie.getId());
+        movieBundle.putString("movie_poster_url", selectedMovie.getImageUrl());
+        movieBundle.putString("movie_backdrop_url", selectedMovie.getBackDropUrl());
+        movieBundle.putString("movie_synopsis", selectedMovie.getSynopsis());
+        movieBundle.putDouble("movie_rating", selectedMovie.getRating());
+        movieBundle.putDouble("movie_popularity", selectedMovie.getPopularity());
+        movieBundle.putString("movie_release_date", selectedMovie.getReleaseDate());
+        movieDetailFragment.setArguments(movieBundle);
+
+        // Master detail flow logic
+        if (dualPaneLayout) {
+            // Replace using child fragment manager and the detail frame layout
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, movieDetailFragment).commit();
+        } else {
+            // Replace using activity fragment manager and the main frame layout
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.frame_main, movieDetailFragment).addToBackStack("items_stack").commit();
         }
+
+
+    }
 
 
     //
