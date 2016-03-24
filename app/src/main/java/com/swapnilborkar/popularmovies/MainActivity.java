@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -33,6 +34,32 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnMo
 
 
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            onBackPressed();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+
+        int count = getSupportFragmentManager().getBackStackEntryCount();
+
+        if (count == 0) {
+            super.onBackPressed();
+
+        } else {
+            getSupportFragmentManager().popBackStack();
+        }
+
     }
 
     public Boolean isDualPane() {
@@ -123,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnMo
         } else {
             // Replace using activity fragment manager and the main frame layout
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.frame_main, movieDetailFragment).addToBackStack("items_stack").commit();
+                    .replace(R.id.frame_main, movieDetailFragment).addToBackStack("item_stack").commit();
         }
 
 

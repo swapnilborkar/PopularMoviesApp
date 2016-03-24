@@ -5,7 +5,7 @@
     <string name="content_desc">Movies</string>
     <string name="no_synopsis">No synopsis available for this movie.</string>
     <string name="spinner_title__main">Sort</string>
-    <string name="api_key">YOUR-API_KEY</string>
+    <string name="api_key">YOUR_API_KEY</string>
     <string name="poster">poster</string>
     <string name="overview_label">Overview</string>
     <string name="rating">Rating</string>
@@ -26,7 +26,5 @@
         <item>Most Popular</item>
         <item>Highest Rated</item>
     </string-array>
-
-
 </resources>
 

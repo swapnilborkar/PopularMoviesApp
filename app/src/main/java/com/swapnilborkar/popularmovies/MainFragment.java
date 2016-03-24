@@ -1,5 +1,7 @@
 package com.swapnilborkar.popularmovies;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -36,13 +38,23 @@ public class MainFragment extends Fragment {
     @Bind(R.id.grid_view)
     GridView gridView;
     OnMovieSelectedListener movieSelectedListener;
+    ArrayList<PopularMovies> popularMovies;
+    Activity mainActivity;
+    ArrayList<PopularMovies> moviesArrayList = new ArrayList<>();
     private PostersAdapter postersAdapter;
-    private ArrayList<PopularMovies> popularMovies;
     private String LOG_TAG = MainActivity.class.getSimpleName();
 
 
     public MainFragment() {
 
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof MainActivity) {
+            mainActivity = (Activity) context;
+        }
     }
 
     public void setMovieSelectedListener(OnMovieSelectedListener movieSelectedListener) {
@@ -67,6 +79,7 @@ public class MainFragment extends Fragment {
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
+        setRetainInstance(true);
 
         ((MainActivity) getActivity()).setSpinner();
 
@@ -74,39 +87,16 @@ public class MainFragment extends Fragment {
         if (((MainActivity) getActivity()).isDualPane()) {
             gridView.setNumColumns(2);
         }
-        postersAdapter = new PostersAdapter(getActivity(), new ArrayList<PopularMovies>());
+        postersAdapter = new PostersAdapter(getActivity(), moviesArrayList);
         gridView.setAdapter(postersAdapter);
+        setMovieSelectedListener((OnMovieSelectedListener) mainActivity);
+
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
 
-                movieSelectedListener.onMovieSelected(postersAdapter.getDataSource().get(position));
-
-//                PopularMovies popularMovies = postersAdapter.getItem(position);
-//                int movie_id = popularMovies.id;
-//                String url = popularMovies.imageUrl;
-//                String backdrop = popularMovies.backDropUrl;
-//                String title = popularMovies.title;
-//                String releaseDate = popularMovies.releaseDate;
-//                String synopsis = popularMovies.synopsis;
-//                double rating = popularMovies.rating;
-//                String ratingString = String.valueOf(rating);
-//                double popularity = popularMovies.popularity;
-//                String popularityString = String.valueOf(popularity);
-//
-//
-//                Intent intent = new Intent(getActivity(), MovieActivity.class)
-//                        .putExtra("id", movie_id)
-//                        .putExtra("url", url)
-//                        .putExtra("title", title)
-//                        .putExtra("release", releaseDate)
-//                        .putExtra("synopsis", synopsis)
-//                        .putExtra("rating", ratingString)
-//                        .putExtra("popularity", popularityString)
-//                        .putExtra("backdrop", backdrop);
-//
-//                startActivity(intent);
+                movieSelectedListener.onMovieSelected(moviesArrayList.get(position));
 
 
             }

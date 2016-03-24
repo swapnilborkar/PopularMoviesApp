@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,8 +58,10 @@ public class MovieDetailFragment extends Fragment {
 
 
 //        Intent intent = getActivity().getIntent();
+        if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
+        }
         //Loading Image and Applying Pal
         String baseUrl = "http://image.tmdb.org/t/p/w500/";
 
@@ -137,7 +140,8 @@ public class MovieDetailFragment extends Fragment {
 
 
         final TextView movieRating = (TextView) rootView.findViewById(R.id.txt_rating);
-        movieRating.setText(getArguments().getString("movie_rating", "null"));
+        String rating = String.valueOf(getArguments().getDouble("movie_rating", 0.0));
+        movieRating.setText(rating.substring(0, 4));
 
         final TextView movieReleaseDate = (TextView) rootView.findViewById(R.id.txt_release);
         String releaseYear = getArguments().getString("movie_release_date", "null");
