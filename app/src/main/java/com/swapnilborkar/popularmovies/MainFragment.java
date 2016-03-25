@@ -53,7 +53,8 @@ public class MainFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
+        ((MainActivity) getActivity()).setSpinner();
+
     }
 
     @Override
@@ -83,10 +84,15 @@ public class MainFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             final Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        ((MainActivity) getActivity()).setSpinner();
+        ((MainActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        ((MainActivity) getActivity()).showSpinner();
+
+
+
 
         final GridView gridView = (GridView) rootView.findViewById(R.id.grid_view);
         if (((MainActivity) getActivity()).isDualPane()) {
@@ -102,6 +108,8 @@ public class MainFragment extends Fragment {
                                     int position, long id) {
 
                 movieSelectedListener.onMovieSelected(moviesArrayList.get(position));
+                ((MainActivity) getActivity()).hideSpinner();
+
 
 
             }

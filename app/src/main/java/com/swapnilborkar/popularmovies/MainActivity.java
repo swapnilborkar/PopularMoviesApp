@@ -11,9 +11,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import butterknife.Bind;
+
 public class MainActivity extends AppCompatActivity implements MainFragment.OnMovieSelectedListener {
 
     private static String sortMode;
+    @Bind(R.id.spinner)
+    Spinner spinner;
     private Boolean dualPaneLayout = false;
 
     @Override
@@ -65,6 +69,19 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnMo
     public Boolean isDualPane() {
         dualPaneLayout = findViewById(R.id.container) != null;
         return dualPaneLayout;
+    }
+
+    public void showSpinner() {
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        assert spinner != null;
+        spinner.setVisibility(View.VISIBLE);
+
+    }
+
+    public void hideSpinner() {
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        assert spinner != null;
+        spinner.setVisibility(View.GONE);
     }
 
 
@@ -151,6 +168,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnMo
             // Replace using activity fragment manager and the main frame layout
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.frame_main, movieDetailFragment).addToBackStack("item_stack").commit();
+
         }
 
 

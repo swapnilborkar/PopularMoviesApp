@@ -42,6 +42,7 @@ public class MovieDetailFragment extends Fragment {
     int lightVibrantColor;
     int alternateColor;
 
+
     public MovieDetailFragment() {
 
 
@@ -62,10 +63,9 @@ public class MovieDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movie, container, false);
 
-
-        //assert ((AppCompatActivity)getActivity()).getSupportActionBar() != null;
-        //((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        ((MainActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
+        ((MainActivity) getActivity()).getSupportActionBar().setTitle(getArguments().getString(MovieData.getMovieTitle()));
+        ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //Loading Image and Applying Pal
         String baseUrl = "http://image.tmdb.org/t/p/w780/";
 
