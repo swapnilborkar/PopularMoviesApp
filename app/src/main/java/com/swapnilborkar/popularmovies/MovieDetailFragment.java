@@ -2,12 +2,17 @@ package com.swapnilborkar.popularmovies;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.Palette;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.io.BufferedReader;
@@ -30,11 +36,11 @@ import java.net.URL;
 public class MovieDetailFragment extends Fragment {
 
     private static final String LOG_TAG = "MovieDetailFragment:";
-//    public static Palette palette;
-//    int defaultColor;
-//    int colorAccent;
-//    int lightVibrantColor;
-//    int alternateColor;
+    public static Palette palette;
+    int defaultColor;
+    int colorAccent;
+    int lightVibrantColor;
+    int alternateColor;
 
     public MovieDetailFragment() {
 
@@ -57,20 +63,75 @@ public class MovieDetailFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_movie, container, false);
 
 
-//        Intent intent = getActivity().getIntent();
-        if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //assert ((AppCompatActivity)getActivity()).getSupportActionBar() != null;
+        //((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        }
         //Loading Image and Applying Pal
-        String baseUrl = "http://image.tmdb.org/t/p/w500/";
+        String baseUrl = "http://image.tmdb.org/t/p/w780/";
 
         int w;
         int h;
 
+        final String backdropBaseUrl = "http://image.tmdb.org/t/p/w780/";
+        String backdropUrl = getArguments().getString("movie_backdrop_url", "null");
+        final ImageView backdropImage = (ImageView) rootView.findViewById(R.id.img_backdrop);
+
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
 
-            w = getResources().getDisplayMetrics().widthPixels / 4; //dividing by numColumns
+            w = getResources().getDisplayMetrics().widthPixels; //dividing by numColumns
+            h = (int) (w * 1.5); //adjusting height to 1.5x times the width
+        } else {
+            w = getResources().getDisplayMetrics().widthPixels; //dividing by numColumns
+            h = getResources().getDisplayMetrics().heightPixels / 3; //adjusting height to 1.5x times the width
+        }
+
+        Picasso.with(getContext())
+                .load(backdropBaseUrl + backdropUrl)
+                .resize(w, h)
+                .centerCrop()
+                .transform(PaletteTransformation.instance())
+                .into(backdropImage, new Callback.EmptyCallback() {
+                    @Override
+                    public void onSuccess() {
+                        Bitmap bitmap = ((BitmapDrawable) backdropImage.getDrawable()).getBitmap();
+                        palette = PaletteTransformation.getPalette(bitmap);
+
+                        defaultColor = getColor(getContext(), R.color.colorPrimary);
+                        colorAccent = getColor(getContext(), R.color.colorAccent);
+                        lightVibrantColor = palette.getLightVibrantColor(defaultColor);
+
+
+                        if (lightVibrantColor != defaultColor) {
+                            float[] hsv = new float[3];
+                            Color.colorToHSV(lightVibrantColor, hsv);
+                            hsv[2] *= 0.8f;
+                            int colorPrimaryDark = Color.HSVToColor(hsv);
+
+
+                            ((AppCompatActivity) getActivity()).getSupportActionBar().setBackgroundDrawable(new ColorDrawable(lightVibrantColor));
+
+                            if (Build.VERSION.SDK_INT >= 21)
+                                getActivity().getWindow().setStatusBarColor(colorPrimaryDark);
+                        }
+
+                        if (lightVibrantColor == defaultColor) {
+                            alternateColor = palette.getLightMutedColor(defaultColor);
+
+                            ((AppCompatActivity) getActivity()).getSupportActionBar().setBackgroundDrawable(new ColorDrawable(alternateColor));
+                            float[] hsv = new float[3];
+                            Color.colorToHSV(alternateColor, hsv);
+                            hsv[2] *= 0.8f;
+                            int colorPrimaryDark = Color.HSVToColor(hsv);
+
+                            if (Build.VERSION.SDK_INT >= 21)
+                                getActivity().getWindow().setStatusBarColor(colorPrimaryDark);
+                        }
+                    }
+                });
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+
+            w = getResources().getDisplayMetrics().widthPixels / 6; //dividing by numColumns
             h = (int) (w * 1.5); //adjusting height to 1.5x times the width
         } else {
             w = getResources().getDisplayMetrics().widthPixels / 2; //dividing by numColumns
@@ -79,8 +140,6 @@ public class MovieDetailFragment extends Fragment {
 
 
         final ImageView moviePoster = (ImageView) rootView.findViewById(R.id.img_poster2);
-
-
         String posterURL = getArguments().getString("movie_poster_url");
 
 
@@ -93,42 +152,6 @@ public class MovieDetailFragment extends Fragment {
                 .placeholder(R.drawable.placeholder)
                 .transform(PaletteTransformation.instance())
                 .into(moviePoster);
-        //, new Callback.EmptyCallback() {
-//                    @Override
-//                    public void onSuccess() {
-////                        Bitmap bitmap = ((BitmapDrawable) moviePoster.getDrawable()).getBitmap();
-////                        palette = PaletteTransformation.getPalette(bitmap);
-////
-////                        defaultColor = getColor(getContext(), R.color.colorPrimary);
-////                        colorAccent = getColor(getContext(), R.color.colorAccent);
-////                        lightVibrantColor = palette.getLightVibrantColor(defaultColor);
-////
-////
-////                        if (lightVibrantColor != defaultColor) {
-////                            float[] hsv = new float[3];
-////                            Color.colorToHSV(lightVibrantColor, hsv);
-////                            hsv[2] *= 0.8f;
-////                            int colorPrimaryDark = Color.HSVToColor(hsv);
-////
-////
-////                                ((AppCompatActivity) getActivity()).getSupportActionBar().setBackgroundDrawable(new ColorDrawable(lightVibrantColor));
-////
-////                            if (Build.VERSION.SDK_INT >= 21)
-////                                getActivity().getWindow().setStatusBarColor(colorPrimaryDark);
-////                        }
-////
-////                        if (lightVibrantColor == defaultColor) {
-////                            alternateColor = palette.getLightMutedColor(defaultColor);
-////
-////                                ((AppCompatActivity)getActivity()).getSupportActionBar().setBackgroundDrawable(new ColorDrawable(alternateColor));
-////                                float[] hsv = new float[3];
-////                                Color.colorToHSV(alternateColor, hsv);
-////                                hsv[2] *= 0.8f;
-////                                int colorPrimaryDark = Color.HSVToColor(hsv);
-////
-////                                if (Build.VERSION.SDK_INT >= 21)
-////                                    getActivity().getWindow().setStatusBarColor(colorPrimaryDark);
-//}}});
 
 
         TextView movieSynopsis = (TextView) rootView.findViewById(R.id.txt_overview);
@@ -140,8 +163,8 @@ public class MovieDetailFragment extends Fragment {
 
 
         final TextView movieRating = (TextView) rootView.findViewById(R.id.txt_rating);
-        String rating = String.valueOf(getArguments().getDouble("movie_rating", 0.0));
-        movieRating.setText(rating.substring(0, 4));
+        String rating = String.valueOf(getArguments().getDouble("movie_rating", 0.00));
+        movieRating.setText(rating);
 
         final TextView movieReleaseDate = (TextView) rootView.findViewById(R.id.txt_release);
         String releaseYear = getArguments().getString("movie_release_date", "null");
@@ -150,14 +173,6 @@ public class MovieDetailFragment extends Fragment {
         final TextView moviePopularity = (TextView) rootView.findViewById(R.id.txt_popularity);
         String popularity = String.valueOf(getArguments().getDouble("movie_popularity", 0.0));
         moviePopularity.setText(popularity.substring(0, 4));
-
-        final String backdropBaseUrl = "http://image.tmdb.org/t/p/w500/";
-        String backdropUrl = getArguments().getString("movie_backdrop_url", "null");
-
-        final ImageView backdropImage = (ImageView) rootView.findViewById(R.id.img_backdrop);
-
-        Picasso.with(getContext())
-                .load(backdropBaseUrl + backdropUrl).into(backdropImage);
 
 
         FetchReviewTask reviewTask = new FetchReviewTask();
