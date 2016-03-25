@@ -167,7 +167,7 @@ public class MainFragment extends Fragment {
 
 
             //Insert your own API key in /res/strings.xml
-            String APIKEY = "?api_key=" + getResources().getString(R.string.api_key);
+            String API_KEY = "?api_key=" + ApiKeys.tMDB_API_KEY;
 
 
             try {
@@ -178,7 +178,7 @@ public class MainFragment extends Fragment {
                     sortMode = "popular";
                 }
 
-                URL url = new URL(baseUrl + sortMode + APIKEY);
+                URL url = new URL(baseUrl + sortMode + API_KEY);
 
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();

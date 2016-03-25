@@ -9,6 +9,7 @@
     tools:context="com.swapnilborkar.popularmovies.MainActivity"
     tools:showIn="@layout/activity_main">
 
+
     <!--<ProgressBar-->
     <!--android:id="@+id/progress_bar"-->
     <!--style="@style/Base.Widget.AppCompat.ProgressBar"-->

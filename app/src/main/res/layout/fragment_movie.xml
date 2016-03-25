@@ -19,6 +19,29 @@
         tools:context="com.swapnilborkar.popularmovies.MovieActivity"
         tools:showIn="@layout/activity_movie_details">
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar1"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_margin="0dp"
+                android:background="?attr/colorPrimary"
+                android:padding="0dp"
+                app:popupTheme="@style/AppTheme.PopupOverlay">
+
+                <Spinner
+                    android:id="@+id/spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="start" />
+
+            </android.support.v7.widget.Toolbar>
+        </LinearLayout>
+
 
         <ImageView
             android:id="@+id/img_poster"
@@ -34,7 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="70dp"
             android:layout_marginTop="120dp"
-            android:gravity="left|top">
+            android:gravity="start|top">
 
             <ProgressBar
                 android:id="@+id/poster_progress"
@@ -57,8 +80,8 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_toRightOf="@id/img_poster"
+            android:layout_marginStart="15dp"
+            android:layout_toEndOf="@id/img_poster"
             android:orientation="vertical">
 
             <TextView
@@ -91,7 +114,7 @@
                     android:id="@+id/label_out_of_ten"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
                     android:layout_marginTop="12dp"
                     android:ellipsize="end"
                     android:text="@string/out_of_ten"
@@ -178,9 +201,9 @@
 
             <ImageView
                 android:id="@+id/img_backdrop"
-                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/placeholder_poster"
                 android:scaleType="centerCrop" />

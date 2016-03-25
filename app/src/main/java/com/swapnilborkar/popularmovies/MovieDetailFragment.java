@@ -190,14 +190,14 @@ public class MovieDetailFragment extends Fragment {
             String baseUrl = "http://api.themoviedb.org/3/movie/";
 
             //Insert your own API key in /res/strings.xml
-            String APIKEY = "?api_key=" + getResources().getString(R.string.api_key);
+            String API_KEY = "?api_key=" + ApiKeys.tMDB_API_KEY;
 
 
             try {
                 // Construct the URL for the OpenWeatherMap query
                 // Possible parameters are avaiable at OWM's forecast API page, at
                 // http://openweathermap.org/API#forecast
-                URL url = new URL(baseUrl + id + endpoint + APIKEY);
+                URL url = new URL(baseUrl + id + endpoint + API_KEY);
 
 
                 // Create the request to OpenWeatherMap, and open the connection
@@ -269,14 +269,14 @@ public class MovieDetailFragment extends Fragment {
 
 
             //Insert your own API key in /res/strings.xml
-            String APIKEY = "?api_key=" + getResources().getString(R.string.api_key);
+            String API_KEY = "?api_key=" + ApiKeys.tMDB_API_KEY;
 
 
             try {
                 // Construct the URL for the OpenWeatherMap query
                 // Possible parameters are avaiable at OWM's forecast API page, at
                 // http://openweathermap.org/API#forecast
-                URL url = new URL(baseUrl + id + endpoint + APIKEY);
+                URL url = new URL(baseUrl + id + endpoint + API_KEY);
 
 
                 // Create the request to OpenWeatherMap, and open the connection
