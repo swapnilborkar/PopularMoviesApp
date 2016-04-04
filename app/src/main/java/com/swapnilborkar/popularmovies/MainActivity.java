@@ -9,25 +9,33 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 
 import butterknife.Bind;
+import butterknife.BindColor;
 
 public class MainActivity extends AppCompatActivity implements MainFragment.OnMovieSelectedListener {
 
     private static String sortMode;
     @Bind(R.id.spinner)
     Spinner spinner;
+    @BindColor(R.color.colorPrimary)
+    int primaryColor;
+    @BindColor(R.color.colorPrimaryDark)
+    int primaryColorDark;
     private Boolean dualPaneLayout = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
+
 
             isDualPane();
 
@@ -36,9 +44,9 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnMo
             transaction.add(R.id.frame_main, fragment);
             transaction.commit();
 
-
         }
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -62,9 +70,10 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnMo
 
         } else {
             getSupportFragmentManager().popBackStack();
-        }
 
+        }
     }
+
 
     public Boolean isDualPane() {
         dualPaneLayout = findViewById(R.id.container) != null;
@@ -84,16 +93,26 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnMo
         spinner.setVisibility(View.GONE);
     }
 
+    public void showConnectivityError() {
+        ImageView errorImage = (ImageView) findViewById(R.id.img_error);
+        assert errorImage != null;
+        errorImage.setVisibility(View.VISIBLE);
 
-    public void setSpinner() {
+    }
+
+    public void setSpinner(int sort) {
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.movie_sort, R.layout.toolbar_spinner_item);
 
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        final Spinner spinner = (Spinner) findViewById(R.id.spinner);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         assert spinner != null;
         spinner.setAdapter(adapter);
+        if (sort == 0)
+            spinner.setSelection(0);
+        else
+            spinner.setSelection(1);
 
         //Spinner on Start
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -101,16 +120,15 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnMo
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 
                 SharedPreferences.Editor editor = getPreferences(0).edit();
-                int selectedPosition;
-
                 Spinner spinner = (Spinner) findViewById(R.id.spinner);
+                assert spinner != null;
+                int selectedPosition;
                 MainFragment fragment = (MainFragment) getSupportFragmentManager().findFragmentById(R.id.frame_main);
 
                 switch (position) {
 
                     case 0:
 
-                        assert spinner != null;
                         selectedPosition = spinner.getSelectedItemPosition();
                         editor.putInt("spinnerSelection", selectedPosition);
                         editor.apply();
@@ -122,7 +140,6 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnMo
 
                     case 1:
 
-                        assert spinner != null;
                         selectedPosition = spinner.getSelectedItemPosition();
                         editor.putInt("spinnerSelection", selectedPosition);
                         editor.apply();

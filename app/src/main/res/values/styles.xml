@@ -21,5 +21,18 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="detail_review">
+        <item name="android:layout_marginTop">@dimen/margin_default</item>
+        <item name="android:layout_marginRight">@dimen/margin_large</item>
+        <item name="android:layout_marginLeft">@dimen/margin_large</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Caption</item>
+    </style>
+
+    <style name="LaunchScreen" parent="Theme.AppCompat.NoActionBar" />
+
+    <style name="AppTheme.BrandedLaunch" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/launch_screen</item>
+    </style>
+
 
 </resources>

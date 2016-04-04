@@ -2,6 +2,7 @@ package com.swapnilborkar.popularmovies;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 
 import org.json.JSONArray;
@@ -33,27 +36,33 @@ public class MainFragment extends Fragment {
     private static String sortMode;
     @Bind(R.id.spinner)
     Spinner spinner;
-
-    //    @Bind(R.id.progress_bar)
-//    ProgressBar pb;
     @Bind(R.id.grid_view)
     GridView gridView;
+    @Bind(R.id.imageView)
+    ImageView error;
     OnMovieSelectedListener movieSelectedListener;
     ArrayList<PopularMovies> popularMovies;
     Activity mainActivity;
+    ProgressBar pb;
     ArrayList<PopularMovies> moviesArrayList = new ArrayList<>();
     private PostersAdapter postersAdapter;
     private String LOG_TAG = MainActivity.class.getSimpleName();
+
 
 
     public MainFragment() {
 
     }
 
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((MainActivity) getActivity()).setSpinner();
+
+
+        SharedPreferences pref = getActivity().getPreferences(0);
+        int selection = pref.getInt("spinnerSelection", 0);
+        ((MainActivity) getActivity()).setSpinner(selection);
 
     }
 
@@ -75,11 +84,11 @@ public class MainFragment extends Fragment {
     }
 
     public void updateMovies() {
-        //Executes the background Network Call
 
         FetchMovieTask task = new FetchMovieTask();
         task.execute();
     }
+
 
 
     @Override
@@ -87,12 +96,17 @@ public class MainFragment extends Fragment {
                              final Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        ((MainActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
-        ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        try {
+            ((MainActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+            ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        } catch (NullPointerException e) {
+            Log.e(LOG_TAG, "getSupportActionBar is null");
+        }
+
         ((MainActivity) getActivity()).showSpinner();
 
-
-
+        final Boolean dualPane = ((MainActivity) getActivity()).isDualPane();
+        pb = (ProgressBar) rootView.findViewById(R.id.progress_bar);
 
         final GridView gridView = (GridView) rootView.findViewById(R.id.grid_view);
         if (((MainActivity) getActivity()).isDualPane()) {
@@ -108,9 +122,8 @@ public class MainFragment extends Fragment {
                                     int position, long id) {
 
                 movieSelectedListener.onMovieSelected(moviesArrayList.get(position));
+                if (!dualPane)
                 ((MainActivity) getActivity()).hideSpinner();
-
-
 
             }
         });
@@ -119,32 +132,7 @@ public class MainFragment extends Fragment {
         return rootView;
     }
 
-    public ArrayList<PopularMovies> getPopularMoviesFromJson(String MovieJsonString) throws JSONException {
 
-
-        ArrayList<PopularMovies> popularMoviesArrayList = new ArrayList<>();
-        JSONObject jsonObject = new JSONObject(MovieJsonString);
-        JSONArray jsonArray = jsonObject.getJSONArray("results");
-
-
-        //parsing every entry in the array using a loop
-        for (int i = 0; i < jsonArray.length(); i++) {
-            String imageUrl = jsonArray.getJSONObject(i).getString("poster_path");
-            int id = jsonArray.getJSONObject(i).getInt("id");
-            String title = jsonArray.getJSONObject(i).getString("original_title");
-            String synopsis = jsonArray.getJSONObject(i).getString("overview");
-            String releaseDate = jsonArray.getJSONObject(i).getString("release_date");
-            double rating = jsonArray.getJSONObject(i).getDouble("vote_average");
-            double popularity = jsonArray.getJSONObject(i).getDouble("popularity");
-            String backDropUrl = jsonArray.getJSONObject(i).getString("backdrop_path");
-
-            PopularMovies movie = new PopularMovies(imageUrl, id, title, synopsis, releaseDate, rating, popularity, backDropUrl);
-            popularMoviesArrayList.add(movie);
-
-        }
-
-        return popularMoviesArrayList;
-    }
 
     public interface OnMovieSelectedListener {
         // Interface for when a MovieItem is clicked
@@ -156,14 +144,37 @@ public class MainFragment extends Fragment {
 
     public class FetchMovieTask extends AsyncTask<Void, Void, String> {
 
+        public ArrayList<PopularMovies> getPopularMoviesFromJson(String MovieJsonString) throws JSONException {
+
+            ArrayList<PopularMovies> popularMoviesArrayList = new ArrayList<>();
+            JSONObject jsonObject = new JSONObject(MovieJsonString);
+            JSONArray jsonArray = jsonObject.getJSONArray("results");
+
+            //parsing every entry in the array using a loop
+            for (int i = 0; i < jsonArray.length(); i++) {
+                String imageUrl = jsonArray.getJSONObject(i).getString("poster_path");
+                int id = jsonArray.getJSONObject(i).getInt("id");
+                String title = jsonArray.getJSONObject(i).getString("original_title");
+                String synopsis = jsonArray.getJSONObject(i).getString("overview");
+                String releaseDate = jsonArray.getJSONObject(i).getString("release_date");
+                double rating = jsonArray.getJSONObject(i).getDouble("vote_average");
+                double popularity = jsonArray.getJSONObject(i).getDouble("popularity");
+                String backDropUrl = jsonArray.getJSONObject(i).getString("backdrop_path");
+
+                PopularMovies movie = new PopularMovies(imageUrl, id, title, synopsis, releaseDate, rating, popularity, backDropUrl);
+                popularMoviesArrayList.add(movie);
+
+            }
+
+            return popularMoviesArrayList;
+        }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
 
-            //pb.setVisibility(View.VISIBLE);
-
+            pb.setVisibility(View.VISIBLE);
 
         }
 
@@ -202,8 +213,9 @@ public class MainFragment extends Fragment {
                 InputStream inputStream = urlConnection.getInputStream();
                 StringBuilder builder = new StringBuilder();
                 if (inputStream == null) {
-                    // Nothing to do.
-                    MoviesJsonStr = null;
+
+                    ((MainActivity) getActivity()).showConnectivityError();
+
                 }
                 if (inputStream != null)
                     reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -265,7 +277,7 @@ public class MainFragment extends Fragment {
 
                     }
 
-                    //pb.setVisibility(View.GONE);
+                    pb.setVisibility(View.GONE);
                 }
             }
         }

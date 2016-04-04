@@ -6,7 +6,7 @@
     <string name="no_synopsis">No synopsis available for this movie.</string>
     <string name="spinner_title__main">Sort</string>
     <string name="poster">poster</string>
-    <string name="overview_label">Overview</string>
+    <string name="overview_label">Synopsis</string>
     <string name="rating">Rating</string>
     <string name="out_of_ten">/ 10</string>
     <string name="release">Release</string>
@@ -15,10 +15,15 @@
     <string name="no_internet">DAGNABIT! No or very purr Internet!</string>
     <string name="retry_connection">Retry</string>
     <string name="added_to_favorites">is added to your Favorites!</string>
-
     <string name="pref_sort_mode_default">sort_by=popularity.desc</string>
     <string name="content_desc_internet_image">No internet</string>
-    <string name="trailer_label">Movie Trailer</string>
+    <string name="network_failure">network_failure</string>
+    <string name="review_content">Review Content</string>
+    <string name="review_label">Review</string>
+    <string name="placeholder_zero">0</string>
+    <string name="expand">expand</string>
+    <string name="trailer_name">Trailer Name</string>
+    <string name="play_button_over_backdrop">Play button over Backdrop</string>
 
 
     <string-array name="movie_sort">

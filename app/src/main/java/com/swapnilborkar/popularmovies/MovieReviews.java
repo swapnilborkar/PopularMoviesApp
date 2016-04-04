@@ -3,9 +3,7 @@ package com.swapnilborkar.popularmovies;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by SWAPNIL on 11-03-2016.
- */
+
 public class MovieReviews implements Parcelable {
     public static final Parcelable.Creator<MovieReviews> CREATOR = new Parcelable.Creator<MovieReviews>() {
         public MovieReviews createFromParcel(Parcel source) {
@@ -21,11 +19,13 @@ public class MovieReviews implements Parcelable {
     String content;
     String url;
 
+    public MovieReviews() {
+
+    }
+
     public MovieReviews(String review_id, String author, String content, String url) {
-        this.review_id = review_id;
-        this.author = author;
         this.content = content;
-        this.url = url;
+
     }
 
     protected MovieReviews(Parcel in) {

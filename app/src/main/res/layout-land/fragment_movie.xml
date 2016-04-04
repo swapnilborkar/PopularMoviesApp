@@ -197,17 +197,17 @@
                 android:ellipsize="end"
                 android:textSize="@dimen/text_size" />
 
-            <TextView
-                android:id="@+id/label_trailer"
-                style="?android:attr/listSeparatorTextViewStyle"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:ellipsize="end"
-                android:text="@string/trailer_label"
-                android:textAlignment="center"
-                android:textColor="#ffffff"
-                android:textSize="@dimen/text_size_12" />
+            <!--<TextView-->
+            <!--android:id="@+id/label_trailer"-->
+            <!--style="?android:attr/listSeparatorTextViewStyle"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:ellipsize="end"-->
+            <!--android:text="@string/trailer_label"-->
+            <!--android:textAlignment="center"-->
+            <!--android:textColor="#ffffff"-->
+            <!--android:textSize="@dimen/text_size_12" />-->
 
             <ImageView
                 android:id="@+id/img_backdrop"

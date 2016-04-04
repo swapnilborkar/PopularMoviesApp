@@ -1,24 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_below="@id/toolbar"
+    android:background="@color/black"
+    android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.swapnilborkar.popularmovies.MainActivity"
     tools:showIn="@layout/activity_main">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <!--<ProgressBar-->
-    <!--android:id="@+id/progress_bar"-->
-    <!--style="@style/Base.Widget.AppCompat.ProgressBar"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_centerHorizontal="true"-->
-    <!--android:layout_centerVertical="true"-->
-    <!--android:indeterminate="true"-->
-    <!--android:visibility="gone"/>-->
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            style="@style/Base.Widget.AppCompat.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:indeterminate="true"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/img_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/network_failure"
+            android:src="@drawable/icon_cry"
+            android:visibility="gone" />
+
+    </RelativeLayout>
 
     <GridView
         android:id="@+id/grid_view"
@@ -26,8 +43,9 @@
         android:layout_height="match_parent"
         android:columnWidth="@dimen/grid_column_width"
         android:gravity="center"
-
+        android:horizontalSpacing="5dp"
         android:numColumns="2"
-        android:stretchMode="columnWidth" />
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="5dp" />
 
-</LinearLayout>
+</RelativeLayout>
