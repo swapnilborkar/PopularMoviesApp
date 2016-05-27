@@ -1,9 +1,12 @@
 package com.swapnilborkar.popularmovies;
 
+import android.content.ContentProviderOperation;
 import android.content.Context;
 import android.content.Intent;
+import android.content.OperationApplicationException;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -13,6 +16,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -34,6 +38,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.swapnilborkar.popularmovies.data.FavoritesProvider;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,8 +60,16 @@ import butterknife.Bind;
  */
 public class MovieDetailFragment extends Fragment {
 
-    private static final String LOG_TAG = "MovieDetailFragment:";
+    private static final String LOG_TAG = MovieDetailFragment.class.getSimpleName();
     public static Palette palette;
+    protected String movie_id;
+    protected String movie_title;
+    protected String movie_thumb;
+    protected String movie_poster;
+    protected String movie_backdrop;
+    protected String movie_release;
+    protected String movie_rating;
+    protected String movie_overview;
     int defaultColor;
     int colorAccent;
     int lightVibrantColor;
@@ -67,8 +80,7 @@ public class MovieDetailFragment extends Fragment {
     ProgressBar backdropPb;
     ImageView playBack;
     ImageView backdropImage;
-
-    ArrayList<MovieTrailer> trailers = new ArrayList<>();
+    ArrayList<MovieTrailers> trailers = new ArrayList<>();
     private List<String> movieReviewList = new ArrayList<>();
     private List<String> movieTrailerListKey = new ArrayList<>();
     private List<String> movieTrailerListName = new ArrayList<>();
@@ -83,6 +95,31 @@ public class MovieDetailFragment extends Fragment {
         } else {
             return context.getResources().getColor(id);
         }
+    }
+
+//    @Override
+//    public void onActivityCreated(Bundle savedInstanceState) {
+//        Cursor c = getActivity().getContentResolver().query(FavoritesProvider.Favorites.CONTENT_URI, null, null, null, null);
+//
+//        Log.i(LOG_TAG, "Cursor Count: "+ c.getColumnCount());
+//        if (c == null | c.getColumnCount() == 0)
+//        {
+//            //Do Something
+//        }
+//    }
+
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        //Execute FetchTrailerTask
+        FetchTrailerTask fetchTrailerTask = new FetchTrailerTask();
+        fetchTrailerTask.execute();
+        //Execute FetchReviewTask
+        FetchReviewTask fetchReviewTask = new FetchReviewTask();
+        fetchReviewTask.execute();
+
     }
 
     @Override
@@ -100,12 +137,15 @@ public class MovieDetailFragment extends Fragment {
             ((MainActivity) getActivity()).getSupportActionBar().setTitle(getArguments().getString(MovieData.getMovieTitle()));
             ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
+        movie_id = getArguments().getString(MovieData.getMovieId());
         //Loading Image and Applying Pal
         String baseUrl = "http://image.tmdb.org/t/p/w500/";
 
         int w;
         int h;
 
+        movie_backdrop = getArguments().getString(MovieData.getMovieBackdropUrl());
         final String backdropBaseUrl = "http://image.tmdb.org/t/p/w780/";
         String backdropUrl = getArguments().getString("movie_backdrop_url", "null");
         backdropImage = (ImageView) rootView.findViewById(R.id.img_backdrop);
@@ -186,7 +226,6 @@ public class MovieDetailFragment extends Fragment {
 //        Log.e("Width = ", Integer.toString(w));
 //        Log.e("Height =", Integer.toString(h));
 
-
         final ImageView moviePoster = (ImageView) rootView.findViewById(R.id.img_poster2);
         String posterURL = getArguments().getString("movie_poster_url");
 
@@ -202,7 +241,7 @@ public class MovieDetailFragment extends Fragment {
                 .into(moviePoster);
 
 
-        TextView movieSynopsis = (TextView) rootView.findViewById(R.id.txt_overview);
+        final TextView movieSynopsis = (TextView) rootView.findViewById(R.id.txt_overview);
         movieSynopsis.setText(getArguments().getString("movie_synopsis", "null"));
 
         if (movieSynopsis.getText() == null) {
@@ -266,7 +305,62 @@ public class MovieDetailFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+                Cursor c = getActivity().getContentResolver().query(FavoritesProvider.Favorites.CONTENT_URI,
+                        null, null, null, null);
+                Log.i(LOG_TAG, "cursor count: " + c.getCount());
+                if (c == null || c.getCount() == 0) {
+                    ArrayList<ContentProviderOperation> batchOperations = new ArrayList<>(1);
 
+                    ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
+                            FavoritesProvider.Favorites.CONTENT_URI);
+
+                    batchOperations.add(builder.build());
+
+
+                    try {
+                        getActivity().getContentResolver().applyBatch(FavoritesProvider.AUTHORITY, batchOperations);
+                    } catch (RemoteException | OperationApplicationException e) {
+                        Log.e(LOG_TAG, "Error applying batch insert", e);
+                    }
+                }
+
+
+//                Uri uri = FavoritesDatabase.Favorites.CONTENT_URI.buildUpon().appendPath(movie_id).build();
+//                Log.i(LOG_TAG, "uri is: " + uri);
+//
+//                try {
+//
+//                    ContentValues contentValues = generateContentValues();
+//                    getActivity().getContentResolver().insert(uri, contentValues);
+
+
+//                    final Cursor favouriteCursor = getActivity().getContentResolver().query(uri, null, null, null, null);
+//                    Log.i(LOG_TAG, "cursor: " + favouriteCursor);
+//                    if ((favouriteCursor != null) && (!(favouriteCursor.moveToNext()))) {
+//                        ContentValues contentValues = generateContentValues();
+//                        Uri insertedUri = getActivity().getContentResolver().insert(FavoritesDatabase.Favorites.CONTENT_URI, contentValues);
+//                        long id = ContentUris.parseId(insertedUri);
+//                        Log.i(LOG_TAG, "id is :" + id);
+//                        if (id != -1) {
+//                            Toast.makeText(getActivity(), "Added to Favourites", Toast.LENGTH_SHORT).show();
+//                        }
+//                    } else {
+//                        deleteFavourite();
+//                        Toast.makeText(getActivity(), "Delete from favourites", Toast.LENGTH_SHORT).show();
+//                    }
+//                    if (favouriteCursor != null) {
+//                        favouriteCursor.close();
+//                    }
+//
+//
+//                } catch (Exception e) {
+//                    
+//                }
+//
+//
+//
+//
+//
                 View fabView = rootView.findViewById(R.id.fab_coordinator_view);
                 Snackbar snackbar;
                 snackbar = Snackbar.make(fabView, getArguments().getString(MovieData.getMovieTitle()) + " is added to your favorites!", Snackbar.LENGTH_SHORT);
@@ -275,11 +369,12 @@ public class MovieDetailFragment extends Fragment {
                 TextView textView = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
                 textView.setTextColor(Color.BLACK);
                 snackbar.show();
+
+
             }
         });
 
-        FetchReviewTask reviewTask = new FetchReviewTask();
-        reviewTask.execute();
+
 
         ListView reviewListView = (ListView) rootView.findViewById(R.id.review_list_view);
         reviewListView.setFocusable(false);
@@ -309,7 +404,7 @@ public class MovieDetailFragment extends Fragment {
         });
 
         ListView trailerListView = (ListView) rootView.findViewById(R.id.trailer_list_view);
-        TrailerAdapter ta = new TrailerAdapter(getContext(), trailers);
+        MovieTrailersAdapter ta = new MovieTrailersAdapter(getContext(), trailers);
         trailerListView.setAdapter(ta);
 
         trailerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -319,11 +414,31 @@ public class MovieDetailFragment extends Fragment {
             }
         });
 
-        FetchTrailerTask trailerTask = new FetchTrailerTask();
-        trailerTask.execute();
+//        FetchTrailerTask trailerTask = new FetchTrailerTask();
+//        trailerTask.execute();
 
         return rootView;
     }
+
+//    //insert movie to FavouriteEntry table
+//    private ContentValues generateContentValues(){
+//        ContentValues favouriteMovieValues = new ContentValues();
+//        favouriteMovieValues.put(FavoritesDatabase.Favorites.COLUMN_MOVIE_ID, movie_id);
+//        favouriteMovieValues.put(FavoritesDatabase.Favorites.COLUMN_TITLE, movie_title);
+//        favouriteMovieValues.put(FavoritesDatabase.Favorites.COLUMN_POSTER, movie_poster);
+//        favouriteMovieValues.put(FavoritesDatabase.Favorites.COLUMN_BACKDROP, movie_backdrop);
+//        favouriteMovieValues.put(FavoritesDatabase.Favorites.COLUMN_POSTER, movie_poster);
+//        favouriteMovieValues.put(FavoritesDatabase.Favorites.COLUMN_SYNOPSIS, movie_overview);
+//        favouriteMovieValues.put(FavoritesDatabase.Favorites.COLUMN_RATING, movie_rating);
+//        favouriteMovieValues.put(FavoritesDatabase.Favorites.COLUMN_RELEASE_DATE, movie_release);
+//
+//
+//        return favouriteMovieValues;
+//    }
+
+//    public void deleteFavourite() {
+//        getActivity().getContentResolver().delete(FavoritesDatabase.Favorites.CONTENT_URI, movie_id, null);
+//    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -446,7 +561,7 @@ public class MovieDetailFragment extends Fragment {
             }
 
             ListView reviewListView = (ListView) getView().findViewById(R.id.review_list_view);
-            ReviewAdapter ra = new ReviewAdapter(getContext(), reviews);
+            MovieReviewsAdapter ra = new MovieReviewsAdapter(getContext(), reviews);
             reviewListView.setAdapter(ra);
         }
     }
@@ -470,8 +585,8 @@ public class MovieDetailFragment extends Fragment {
                     movieTrailerListKey.add(i, YoutubeBaseUrl + trailer.getString("key"));
                     movieTrailerListName.add(i, trailer.getString("name"));
                 }
-                Log.i(LOG_TAG, " YouTube URL is: " + movieTrailerListKey.get(i));
-                Log.i(LOG_TAG, " YouTube Trailer name is: " + movieTrailerListName.get(i));
+//                Log.i(LOG_TAG, " YouTube URL is: " + movieTrailerListKey.get(i));
+//                Log.i(LOG_TAG, " YouTube Trailer name is: " + movieTrailerListName.get(i));
             }
         }
 
@@ -527,7 +642,7 @@ public class MovieDetailFragment extends Fragment {
                 trailerJsonString = builder.toString();
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
-                // If the code didn't successfully get the weather data, there's no point in attemping
+                // If the code didn't successfully get the weather data, there's no point in attempting
                 // to parse it.
                 trailerJsonString = null;
             } finally {
@@ -557,12 +672,12 @@ public class MovieDetailFragment extends Fragment {
         @Override
         protected void onPostExecute(String s) {
 
-            Log.i(LOG_TAG, "Result trailer url is:   " + movieTrailerListKey);
-            Log.i(LOG_TAG, "Result trailer name is:   " + movieTrailerListName);
+//            Log.i(LOG_TAG, "Result trailer url is:   " + movieTrailerListKey);
+//            Log.i(LOG_TAG, "Result trailer name is:   " + movieTrailerListName);
 
             // get all member variables in place
             for (int i = 0; i < movieTrailerListKey.size(); i++) {
-                final MovieTrailer trailer = new MovieTrailer();
+                final MovieTrailers trailer = new MovieTrailers();
                 trailer.name = movieTrailerListName.get(i);
                 trailer.key = movieTrailerListKey.get(i);
                 trailers.add(trailer);

@@ -14,24 +14,16 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 
-public class PostersAdapter extends ArrayAdapter<PopularMovies> {
+public class PopularMoviesAdapter extends ArrayAdapter<PopularMovies> {
 
-    MainActivity mainActivity;
+
     private Context mContext;
-    private List<PopularMovies> movieDataSource;
 
-
-    public PostersAdapter(Activity context, List<PopularMovies> popularMovies) {
+    public PopularMoviesAdapter(Activity context, List<PopularMovies> popularMovies) {
 
         super(context, 0, popularMovies);
         mContext = context;
     }
-
-    public List<PopularMovies> getDataSource() {
-        return movieDataSource;
-    }
-
-
 
 
     @Override

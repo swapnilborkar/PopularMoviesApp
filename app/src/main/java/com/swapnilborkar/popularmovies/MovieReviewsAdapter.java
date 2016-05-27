@@ -11,10 +11,10 @@ import com.ms.square.android.expandabletextview.ExpandableTextView;
 import java.util.ArrayList;
 
 
-public class ReviewAdapter extends ArrayAdapter<MovieReviews> {
-    private static final String LOG_TAG = ReviewAdapter.class.getSimpleName();
+public class MovieReviewsAdapter extends ArrayAdapter<MovieReviews> {
+    private static final String LOG_TAG = MovieReviewsAdapter.class.getSimpleName();
 
-    public ReviewAdapter(Context context, ArrayList<MovieReviews> objects) {
+    public MovieReviewsAdapter(Context context, ArrayList<MovieReviews> objects) {
         super(context, 0, objects);
     }
 

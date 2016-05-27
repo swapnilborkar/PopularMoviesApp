@@ -10,16 +10,16 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 
-public class TrailerAdapter extends ArrayAdapter<MovieTrailer> {
+public class MovieTrailersAdapter extends ArrayAdapter<MovieTrailers> {
 
-    public TrailerAdapter(Context context, ArrayList<MovieTrailer> objects) {
+    public MovieTrailersAdapter(Context context, ArrayList<MovieTrailers> objects) {
         super(context, 0, objects);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         //get Movie object from the ArrayAdapter at the appropriate position
-        MovieTrailer current = getItem(position);
+        MovieTrailers current = getItem(position);
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.trailer_item, parent, false);

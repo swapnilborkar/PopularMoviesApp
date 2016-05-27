@@ -45,10 +45,8 @@ public class MainFragment extends Fragment {
     Activity mainActivity;
     ProgressBar pb;
     ArrayList<PopularMovies> moviesArrayList = new ArrayList<>();
-    private PostersAdapter postersAdapter;
+    private PopularMoviesAdapter popularMoviesAdapter;
     private String LOG_TAG = MainActivity.class.getSimpleName();
-
-
 
     public MainFragment() {
 
@@ -112,8 +110,8 @@ public class MainFragment extends Fragment {
         if (((MainActivity) getActivity()).isDualPane()) {
             gridView.setNumColumns(2);
         }
-        postersAdapter = new PostersAdapter(getActivity(), moviesArrayList);
-        gridView.setAdapter(postersAdapter);
+        popularMoviesAdapter = new PopularMoviesAdapter(getActivity(), moviesArrayList);
+        gridView.setAdapter(popularMoviesAdapter);
         setMovieSelectedListener((OnMovieSelectedListener) mainActivity);
 
 
@@ -174,7 +172,7 @@ public class MainFragment extends Fragment {
             super.onPreExecute();
 
 
-            pb.setVisibility(View.VISIBLE);
+            //pb.setVisibility(View.VISIBLE);
 
         }
 
@@ -203,6 +201,7 @@ public class MainFragment extends Fragment {
                 }
 
                 URL url = new URL(baseUrl + sortMode + API_KEY);
+                Log.e(LOG_TAG, url.toString());
 
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -263,7 +262,7 @@ public class MainFragment extends Fragment {
             super.onPostExecute(s);
 
             if (s != null) {
-                postersAdapter.clear();
+                popularMoviesAdapter.clear();
                 try {
                     popularMovies = getPopularMoviesFromJson(s);
                 } catch (JSONException e) {
@@ -273,11 +272,11 @@ public class MainFragment extends Fragment {
                 {
                     for (PopularMovies movie : popularMovies) {
 
-                        postersAdapter.add(movie);
+                        popularMoviesAdapter.add(movie);
 
                     }
 
-                    pb.setVisibility(View.GONE);
+                    //pb.setVisibility(View.GONE);
                 }
             }
         }

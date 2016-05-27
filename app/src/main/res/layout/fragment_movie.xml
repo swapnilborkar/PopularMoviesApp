@@ -258,7 +258,9 @@
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/fab_coordinator_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true">
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_favorite_movies"

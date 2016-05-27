@@ -8,7 +8,7 @@ public class MovieData {
     public static String MOVIE_ID = "movie_id";
     public static String MOVIE_SYNOPSIS = "movie_synopsis";
     public static String MOVIE_RATING = "movie_rating";
-    public static String MOVIE_POPULATITY = "movie_popularity";
+    public static String MOVIE_POPULARITY = "movie_popularity";
     public static String MOVIE_RELEASE_DATE = "movie_release_date";
     public static String MOVIE_POSTER_URL = "movie_poster_url";
     public static String MOVIE_BACKDROP_URL = "movie_backdrop_url";
@@ -70,11 +70,11 @@ public class MovieData {
     }
 
     public static String getMoviePopulatity() {
-        return MOVIE_POPULATITY;
+        return MOVIE_POPULARITY;
     }
 
     public static void setMoviePopulatity(String moviePopulatity) {
-        MOVIE_POPULATITY = moviePopulatity;
+        MOVIE_POPULARITY = moviePopulatity;
     }
 
     public static String getMovieReleaseDate() {

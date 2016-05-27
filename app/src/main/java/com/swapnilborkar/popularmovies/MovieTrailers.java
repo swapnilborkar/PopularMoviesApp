@@ -4,26 +4,26 @@ package com.swapnilborkar.popularmovies;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class MovieTrailer implements Parcelable {
+public class MovieTrailers implements Parcelable {
     public static final String PARCEL_TAG = "trailer_tag";
-    public static final Parcelable.Creator<MovieTrailer> CREATOR = new Parcelable.Creator<MovieTrailer>() {
+    public static final Parcelable.Creator<MovieTrailers> CREATOR = new Parcelable.Creator<MovieTrailers>() {
         @Override
-        public MovieTrailer createFromParcel(Parcel source) {
-            return new MovieTrailer(source);
+        public MovieTrailers createFromParcel(Parcel source) {
+            return new MovieTrailers(source);
         }
 
         @Override
-        public MovieTrailer[] newArray(int size) {
-            return new MovieTrailer[size];
+        public MovieTrailers[] newArray(int size) {
+            return new MovieTrailers[size];
         }
     };
     public String name;
     public String key;
 
-    public MovieTrailer() {
+    public MovieTrailers() {
     }
 
-    protected MovieTrailer(Parcel in) {
+    protected MovieTrailers(Parcel in) {
         this.name = in.readString();
         this.key = in.readString();
     }
